@@ -4,7 +4,7 @@ import './SignupForm.css';
 import {isRequired, isSame, useForm} from '../../shared/hooks/useForm';
 
 
-export const SignupForm = (onSubmit) => {
+export const SignupForm = ({onSubmit}) => {
   const initialState = {firstName: '', lastName: '', email: '', password: '', repeatPassword: ''};
   const validations = [
     ({firstName}) => isRequired(firstName) || {firstName: 'First name is required'},
@@ -13,7 +13,8 @@ export const SignupForm = (onSubmit) => {
     ({password}) => isRequired(password) || {password: 'Password is required'},
     ({password, repeatPassword}) => isSame(password, repeatPassword) || {repeatPassword: 'Passwords do not match'}
   ];
-  const {values, errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmit);
+  const onSubmitWrapper = ({repeatPassword, ...rest}) => onSubmit(rest);
+  const {values, errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmitWrapper);
 
   return (
     <form
