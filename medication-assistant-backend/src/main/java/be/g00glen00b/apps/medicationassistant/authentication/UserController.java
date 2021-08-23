@@ -4,8 +4,12 @@ import be.g00glen00b.apps.medicationassistant.core.MessageDTO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +26,17 @@ public class UserController {
     })
     public UserInfoDTO createUser(@RequestBody CreateUserRequestDTO request) {
         return service.createUser(request);
+    }
+
+    @GetMapping("/current")
+    @ApiOperation(value = "", authorizations = @Authorization("basicAuth"))
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Success", response = UserInfoDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class),
+        @ApiResponse(code = 404, message = "Bad request", response = MessageDTO.class)
+    })
+    public ResponseEntity<UserInfoDTO> findCurrentUser(@AuthenticationPrincipal UserAuthenticationInfoDTO userDetails) {
+        return ResponseEntity.of(service.findById(userDetails.getId()));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

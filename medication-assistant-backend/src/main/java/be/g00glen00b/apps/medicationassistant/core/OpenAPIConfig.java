@@ -2,6 +2,7 @@ package be.g00glen00b.apps.medicationassistant.core;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -21,6 +22,7 @@ public class OpenAPIConfig {
             .groupName("medication-assistant-api")
             .useDefaultResponseMessages(false)
             .apiInfo(medicationAssistantApiInfo())
+            .ignoredParameterTypes(AuthenticationPrincipal.class)
             .select()
             .paths(PathSelectors.any())
             .build()

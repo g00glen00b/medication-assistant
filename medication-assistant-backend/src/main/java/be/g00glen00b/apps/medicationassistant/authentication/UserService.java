@@ -8,6 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 class UserService implements UserDetailsService {
@@ -23,9 +26,22 @@ class UserService implements UserDetailsService {
         return new UserInfoDTO(savedUser);
     }
 
+    public Optional<UserAuthenticationInfoDTO> findByEmail(String email) {
+        return repository
+            .findByEmail(email)
+            .map(UserAuthenticationInfoDTO::new);
+    }
+
+    public Optional<UserInfoDTO> findById(UUID id) {
+        return repository
+            .findById(id)
+            .map(UserInfoDTO::new);
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserAuthenticationInfoDTO loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("There is no such user"));
     }
 
     private void validateUniqueEmailaddress(String email) {
