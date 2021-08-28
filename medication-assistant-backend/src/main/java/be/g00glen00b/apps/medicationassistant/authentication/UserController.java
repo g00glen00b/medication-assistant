@@ -19,7 +19,7 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    @ApiOperation(value = "")
+    @ApiOperation(value = "Create a new user")
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success", response = UserInfoDTO.class),
         @ApiResponse(code = 400, message = "Bad request", response = MessageDTO.class)
@@ -29,19 +29,27 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    @ApiOperation(value = "", authorizations = @Authorization("basicAuth"))
+    @ApiOperation(value = "Retrieve the currently authenticated user", authorizations = @Authorization("basicAuth"))
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success", response = UserInfoDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class),
-        @ApiResponse(code = 404, message = "Bad request", response = MessageDTO.class)
+        @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
     })
-    public ResponseEntity<UserInfoDTO> findCurrentUser(@AuthenticationPrincipal UserAuthenticationInfoDTO userDetails) {
-        return ResponseEntity.of(service.findById(userDetails.getId()));
+    public UserInfoDTO findCurrentUser(@AuthenticationPrincipal UserAuthenticationInfoDTO userDetails) {
+        return service
+            .findById(userDetails.getId())
+            .orElseThrow(() -> new UserNotFoundException("Currently authenticated user no longer exists"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidUserException.class)
     public MessageDTO handleInvalidUser(InvalidUserException ex) {
+        return new MessageDTO(ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public MessageDTO handleInvalidUser(UserNotFoundException ex) {
         return new MessageDTO(ex.getMessage());
     }
 }
