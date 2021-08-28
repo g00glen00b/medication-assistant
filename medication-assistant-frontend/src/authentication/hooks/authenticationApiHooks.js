@@ -19,3 +19,23 @@ export function useCreateUserApi(request) {
   }, [request]);
   return {response, error};
 }
+
+export function useLoginApi(username, password) {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() =>  {
+    if (username != null && password != null) {
+      (async function () {
+        try {
+          const auth = {username, password};
+          setResponse(await axios.get('/api/user/current', {auth}));
+          setError(null);
+        } catch (err) {
+          setResponse(null);
+          setError(err);
+        }
+      })();
+    }
+  }, [username, password]);
+  return {response, error};
+}

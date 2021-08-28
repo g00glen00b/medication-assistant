@@ -1,0 +1,15 @@
+.login-form .form-fields {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form .actions {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form .actions a {
+  margin-top: 1em;
+  align-self: center;
+}
