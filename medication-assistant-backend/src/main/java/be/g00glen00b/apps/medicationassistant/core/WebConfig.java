@@ -13,5 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("forward:/index.html");
         registry.addViewController("/{x:[\\w\\-]+}").setViewName("forward:/index.html");
         registry.addViewController("/{x:^(?!api$).*$}/**/{y:[\\w\\-]+}").setViewName("forward:/index.html");
+        registry.addViewController("/swagger-ui").setViewName("redirect:/swagger-ui/");
+        registry.addViewController("/swagger-ui/").setViewName("forward:/swagger-ui/index.html");
     }
 }

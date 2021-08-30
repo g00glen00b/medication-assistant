@@ -6,8 +6,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.BasicAuth;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
@@ -15,18 +18,33 @@ import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import java.util.List;
 
 @Configuration
-public class OpenAPIConfig {
+public class SwaggerConfig {
     @Bean
     public Docket medicationAssistantApi() {
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
+            .securityContexts(List.of(securityContext()))
+            .securitySchemes(List.of(basicAuth()))
             .groupName("medication-assistant-api")
             .useDefaultResponseMessages(false)
             .apiInfo(medicationAssistantApiInfo())
             .ignoredParameterTypes(AuthenticationPrincipal.class)
             .select()
-            .paths(PathSelectors.any())
-            .build()
-            .securitySchemes(List.of(basicAuth()));
+                .paths(PathSelectors.any())
+            .build();
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+            .securityReferences(List.of(defaultAuth()))
+            .operationSelector(context -> true)
+            .build();
+    }
+
+    private SecurityReference defaultAuth() {
+        return SecurityReference.builder()
+            .reference("basicAuth")
+            .scopes(new AuthorizationScope[0])
+            .build();
     }
 
     private BasicAuth basicAuth() {
@@ -40,7 +58,6 @@ public class OpenAPIConfig {
     @Bean
     public SecurityConfiguration securityConfiguration() {
         return SecurityConfigurationBuilder.builder()
-            .enableCsrfSupport(true)
             .build();
     }
 }
