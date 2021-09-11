@@ -1,0 +1,1 @@
+export const AvailabilityPage = () => <p>Hello world</p>;

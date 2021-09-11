@@ -1,6 +1,5 @@
-import './LoginForm.css';
 import {isRequired, useForm} from '../../shared/hooks/useForm';
-import {Button, Link, TextInputField} from 'evergreen-ui';
+import {Button, Heading, Link, Pane, TextInputField} from 'evergreen-ui';
 import {Link as RouterLink} from 'react-router-dom';
 
 export const LoginForm = ({onSubmit}) => {
@@ -12,10 +11,15 @@ export const LoginForm = ({onSubmit}) => {
   const {errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmit);
 
   return (
-    <form
-      className="login-form"
+    <Pane
+      is="form"
+      width="100%"
       onSubmit={submitHandler}>
-      <h2>Log in</h2>
+      <Heading
+        size={800}
+        marginBottom="1em">
+        Log in
+      </Heading>
       <div className="form-fields">
         <div className="email">
           <TextInputField
@@ -40,7 +44,10 @@ export const LoginForm = ({onSubmit}) => {
             onChange={changeHandler}/>
         </div>
       </div>
-      <div className="actions">
+      <Pane
+        display="flex"
+        flexDirection="column"
+        marginTop="1em">
         <Button
           appearance="primary"
           size="large"
@@ -49,10 +56,12 @@ export const LoginForm = ({onSubmit}) => {
         </Button>
         <Link
           is={RouterLink}
-          to="/signup">
+          to="/signup"
+          marginTop="1em"
+          alignSelf="center">
           I'm new, sign me up.
         </Link>
-      </div>
-    </form>
+      </Pane>
+    </Pane>
   );
 };
