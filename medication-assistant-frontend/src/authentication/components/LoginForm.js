@@ -1,8 +1,7 @@
-import {FormField} from '../../shared/components/FormField';
-import {Button} from '../../shared/components/Button';
 import './LoginForm.css';
 import {isRequired, useForm} from '../../shared/hooks/useForm';
-
+import {Button, Link, TextInputField} from 'evergreen-ui';
+import {Link as RouterLink} from 'react-router-dom';
 
 export const LoginForm = ({onSubmit}) => {
   const initialState = {email: '', password: ''};
@@ -10,7 +9,7 @@ export const LoginForm = ({onSubmit}) => {
     ({email}) => isRequired(email) || {email: 'E-mail is required'},
     ({password}) => isRequired(password) || {password: 'Password is required'}
   ];
-  const {values, errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmit);
+  const {errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmit);
 
   return (
     <form
@@ -18,37 +17,41 @@ export const LoginForm = ({onSubmit}) => {
       onSubmit={submitHandler}>
       <h2>Log in</h2>
       <div className="form-fields">
-        <FormField className="email">
-          <label>E-mail</label>
-          <input
+        <div className="email">
+          <TextInputField
+            required
             type="email"
-            placeholder="ex. harry.potter@example.org"
+            label="E-mail"
             name="email"
-            required
-            value={values.email}
+            description="For example: harry.potter@example.org"
+            isInvalid={errors.email}
+            validationMessage={touched.email && errors.email}
             onChange={changeHandler}/>
-          {touched.email && errors.email && <p className="error">{errors.email}</p>}
-        </FormField>
-        <FormField className="password">
-          <label>Password</label>
-          <input
+        </div>
+        <div className="password">
+          <TextInputField
+            required
             type="password"
-            placeholder="ex. Pa$$w0rd"
+            label="Password"
             name="password"
-            required
-            value={values.password}
+            description="For example: Pa$$w0rd"
+            isInvalid={errors.password}
+            validationMessage={touched.password && errors.password}
             onChange={changeHandler}/>
-          {touched.password && errors.password && <p className="error">{errors.password}</p>}
-        </FormField>
+        </div>
       </div>
       <div className="actions">
         <Button
+          appearance="primary"
+          size="large"
           disabled={!isValid}>
           Log in
         </Button>
-        <a href="#">
+        <Link
+          is={RouterLink}
+          to="/signup">
           I'm new, sign me up.
-        </a>
+        </Link>
       </div>
     </form>
   );

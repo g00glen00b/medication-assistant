@@ -1,9 +1,8 @@
-import './SignupPage.css';
 import {HeroContainer} from '../../shared/components/HeroContainer';
 import {SignupForm} from '../components/SignupForm';
 import {useState} from 'react';
 import {useCreateUserApi} from '../hooks/authenticationApiHooks';
-import {Message} from '../../shared/components/Message';
+import {Alert} from 'evergreen-ui';
 
 export const SignupPage = () => {
   const [signupInput, setSignupInput] = useState(null);
@@ -11,12 +10,12 @@ export const SignupPage = () => {
 
   return (
     <HeroContainer>
-      {error && <Message type="error">
+      {error && <Alert intent="danger">
         {error.response.data.message}
-      </Message>}
-      {response && <Message type="success">
+      </Alert>}
+      {response && <Alert intent="success">
         Sign up was succesful. You can now log in.
-      </Message>}
+      </Alert>}
       <SignupForm onSubmit={setSignupInput}/>
     </HeroContainer>
   );

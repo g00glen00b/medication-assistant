@@ -1,7 +1,7 @@
-import {FormField} from '../../shared/components/FormField';
-import {Button} from '../../shared/components/Button';
 import './SignupForm.css';
 import {isRequired, isSame, useForm} from '../../shared/hooks/useForm';
+import {Button, Link, TextInputField} from 'evergreen-ui';
+import {Link as RouterLink} from 'react-router-dom';
 
 
 export const SignupForm = ({onSubmit}) => {
@@ -14,78 +14,81 @@ export const SignupForm = ({onSubmit}) => {
     ({password, repeatPassword}) => isSame(password, repeatPassword) || {repeatPassword: 'Passwords do not match'}
   ];
   const onSubmitWrapper = ({repeatPassword, ...rest}) => onSubmit(rest);
-  const {values, errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmitWrapper);
-
+  const {errors, touched, isValid, changeHandler, submitHandler} = useForm(initialState, validations, onSubmitWrapper);
   return (
     <form
       className="signup-form"
       onSubmit={submitHandler}>
       <h2>Sign up</h2>
       <div className="form-fields">
-        <FormField className="first-name">
-          <label>First name</label>
-          <input
-            type="text"
-            placeholder="ex. Harry"
+        <div className="first-name">
+          <TextInputField
+            required
+            label="First name"
             name="firstName"
-            required
-            value={values.firstName}
+            description="For example: Harry"
+            isInvalid={errors.firstName}
+            validationMessage={touched.firstName && errors.firstName}
             onChange={changeHandler}/>
-          {touched.firstName && errors.firstName && <p className="error">{errors.firstName}</p>}
-        </FormField>
-        <FormField className="last-name">
-          <label>Last name</label>
-          <input
-            type="text"
-            placeholder="ex. Potter"
+        </div>
+        <div className="last-name">
+          <TextInputField
+            required
+            label="Last name"
             name="lastName"
-            required
-            value={values.lastName}
+            description="For example: Potter"
+            isInvalid={errors.lastName}
+            validationMessage={touched.lastName && errors.lastName}
             onChange={changeHandler}/>
-          {touched.lastName && errors.lastName && <p className="error">{errors.lastName}</p>}
-        </FormField>
-        <FormField className="email">
-          <label>E-mail</label>
-          <input
+        </div>
+        <div className="email">
+          <TextInputField
+            required
             type="email"
-            placeholder="ex. harry.potter@example.org"
+            label="E-mail"
             name="email"
-            required
-            value={values.email}
+            description="For example: harry.potter@example.org"
+            isInvalid={errors.email}
+            validationMessage={touched.email && errors.email}
             onChange={changeHandler}/>
-          {touched.email && errors.email && <p className="error">{errors.email}</p>}
-        </FormField>
-        <FormField className="password">
-          <label>Password</label>
-          <input
+        </div>
+        <div className="password">
+          <TextInputField
+            required
             type="password"
-            placeholder="ex. Pa$$w0rd"
+            label="Password"
             name="password"
-            required
-            value={values.password}
+            description="For example: Pa$$w0rd"
+            isInvalid={errors.password}
+            validationMessage={touched.password && errors.password}
             onChange={changeHandler}/>
-          {touched.password && errors.password && <p className="error">{errors.password}</p>}
-        </FormField>
-        <FormField className="repeat-password">
-          <label>Repeat password</label>
-          <input
+        </div>
+        <div className="repeat-password">
+          <TextInputField
+            required
+            className="repeat-password"
             type="password"
-            placeholder="ex. Pa$$w0rd"
+            label="Repeat password"
             name="repeatPassword"
-            required
-            value={values.repeatPassword}
+            description="For example: Pa$$w0rd"
+            isInvalid={errors.repeatPassword}
+            validationMessage={touched.repeatPassword && errors.repeatPassword}
             onChange={changeHandler}/>
-          {touched.repeatPassword && errors.repeatPassword && <p className="error">{errors.repeatPassword}</p>}
-        </FormField>
+        </div>
       </div>
       <div className="actions">
         <Button
-          disabled={!isValid}>
+          disabled={!isValid}
+          appearance="primary"
+          size="large">
           Sign up
         </Button>
-        <a href="#">
+        <Link
+          href="#"
+          is={RouterLink}
+          to="/login">
           I already have an account. Log me in.
-        </a>
+        </Link>
       </div>
     </form>
   );

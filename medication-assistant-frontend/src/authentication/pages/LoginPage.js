@@ -1,8 +1,8 @@
 import {HeroContainer} from '../../shared/components/HeroContainer';
 import {useState} from 'react';
-import {Message} from '../../shared/components/Message';
 import {LoginForm} from '../components/LoginForm';
 import {useLoginApi} from '../hooks/authenticationApiHooks';
+import {Alert} from 'evergreen-ui';
 
 export const LoginPage = () => {
   const [loginInput, setLoginInput] = useState({email: null, password: null});
@@ -10,12 +10,12 @@ export const LoginPage = () => {
 
   return (
     <HeroContainer>
-      {error && <Message type="error">
+      {error && <Alert intent="danger">
         {error.response.data.error}
-      </Message>}
-      {response && <Message type="success">
+      </Alert>}
+      {response && <Alert type="success">
         Sign up was succesful. You can now log in.
-      </Message>}
+      </Alert>}
       <LoginForm onSubmit={setLoginInput}/>
     </HeroContainer>
   );
