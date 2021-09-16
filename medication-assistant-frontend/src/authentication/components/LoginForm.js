@@ -28,7 +28,7 @@ export const LoginForm = ({onSubmit}) => {
             label="E-mail"
             name="email"
             description="For example: harry.potter@example.org"
-            isInvalid={errors.email}
+            isInvalid={errors.email != null && touched.email}
             validationMessage={touched.email && errors.email}
             onChange={changeHandler}/>
         </div>
@@ -39,7 +39,7 @@ export const LoginForm = ({onSubmit}) => {
             label="Password"
             name="password"
             description="For example: Pa$$w0rd"
-            isInvalid={errors.password}
+            isInvalid={errors.password != null && touched.password}
             validationMessage={touched.password && errors.password}
             onChange={changeHandler}/>
         </div>

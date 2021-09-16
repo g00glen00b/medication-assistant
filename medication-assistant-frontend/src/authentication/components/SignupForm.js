@@ -36,7 +36,7 @@ export const SignupForm = ({onSubmit}) => {
           label="First name"
           name="firstName"
           description="For example: Harry"
-          isInvalid={errors.firstName}
+          isInvalid={errors.firstName != null && touched.firstName}
           validationMessage={touched.firstName && errors.firstName}
           onChange={changeHandler}/>
         <TextInputField
@@ -47,7 +47,7 @@ export const SignupForm = ({onSubmit}) => {
           label="Last name"
           name="lastName"
           description="For example: Potter"
-          isInvalid={errors.lastName}
+          isInvalid={errors.lastName != null && touched.lastName}
           validationMessage={touched.lastName && errors.lastName}
           onChange={changeHandler}/>
         <TextInputField
@@ -59,7 +59,7 @@ export const SignupForm = ({onSubmit}) => {
           label="E-mail"
           name="email"
           description="For example: harry.potter@example.org"
-          isInvalid={errors.email}
+          isInvalid={errors.email != null && touched.email}
           validationMessage={touched.email && errors.email}
           onChange={changeHandler}/>
         <TextInputField
@@ -71,7 +71,7 @@ export const SignupForm = ({onSubmit}) => {
           label="Password"
           name="password"
           description="For example: Pa$$w0rd"
-          isInvalid={errors.password}
+          isInvalid={errors.password != null && touched.password}
           validationMessage={touched.password && errors.password}
           onChange={changeHandler}/>
         <TextInputField
@@ -84,7 +84,7 @@ export const SignupForm = ({onSubmit}) => {
           label="Repeat password"
           name="repeatPassword"
           description="For example: Pa$$w0rd"
-          isInvalid={errors.repeatPassword}
+          isInvalid={errors.repeatPassword != null && touched.repeatPassword}
           validationMessage={touched.repeatPassword && errors.repeatPassword}
           onChange={changeHandler}/>
       </Pane>
