@@ -39,3 +39,20 @@ export function useLoginApi(username, password) {
   }, [username, password]);
   return {response, error};
 }
+
+export function useCurrentUser() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() =>  {
+    (async function () {
+      try {
+        setResponse(await axios.get('/api/user/current'));
+        setError(null);
+      } catch (err) {
+        setResponse(null);
+        setError(err);
+      }
+    })();
+  }, []);
+  return {response, error};
+}

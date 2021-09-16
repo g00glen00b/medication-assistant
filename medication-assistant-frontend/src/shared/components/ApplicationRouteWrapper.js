@@ -1,10 +1,13 @@
-import {Route, Switch, useRouteMatch} from 'react-router-dom';
+import {Redirect, Route, Switch, useRouteMatch} from 'react-router-dom';
 import {TopNav} from './TopNav';
 import {AvailabilityPage} from '../../avaialbility/pages/AvailabilityPage';
 import {Pane} from 'evergreen-ui';
+import {useContext} from 'react';
+import {AuthenticationContext} from '../../authentication/components/AuthenticationContext';
 
 export const ApplicationRouteWrapper = () => {
   const {url} = useRouteMatch();
+  const {state: {user}} = useContext(AuthenticationContext);
   return (
     <>
       <TopNav/>
@@ -12,8 +15,12 @@ export const ApplicationRouteWrapper = () => {
         padding="1em"
         marginTop="53px">
         <Switch>
-          <Route path={`${url}/availability`}>
+          {user == null && <Redirect to={`/login`} />}
+          <Route exact path={`${url}/availability`}>
             <AvailabilityPage/>
+          </Route>
+          <Route exact path={url}>
+            <Redirect to={`${url}/availability`} />
           </Route>
         </Switch>
       </Pane>
