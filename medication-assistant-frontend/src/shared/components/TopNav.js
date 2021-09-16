@@ -2,8 +2,8 @@
 // noinspection HtmlUnknownTarget
 
 import {GiPill} from 'react-icons/gi';
-import {Link, Pane} from 'evergreen-ui';
-import {Link as RouterLink} from 'react-router-dom';
+import {Link, Pane, Text} from 'evergreen-ui';
+import {Link as RouterLink, useLocation} from 'react-router-dom';
 
 export const TopNav = () => (
   <Pane
@@ -23,22 +23,42 @@ export const TopNav = () => (
       flexDirection="row"
       alignItems="center"
       is={RouterLink}
-      to="/app/home">
+      to="/app">
       <GiPill
         style={{marginRight: '0.5em'}}/>
       Medication assistant
     </Link>
-    <Link
-      paddingX="1em"
-      is={RouterLink}
-      to="/app/availabilities">
+    <TopNavLink
+      to="/app/availability">
       Availabilities
-    </Link>
-    <Link
-      paddingX="1em"
-      is={RouterLink}
+    </TopNavLink>
+    <TopNavLink
       to="/app/schedule">
       Schedule
-    </Link>
+    </TopNavLink>
   </Pane>
 );
+
+const TopNavLink = ({children, to}) => {
+  const {pathname} = useLocation();
+  const isActive = pathname === to;
+
+  return (
+    <>
+      {isActive ? (
+        <Text
+          paddingX="1em"
+          fontWeight={500}>
+          {children}
+        </Text>
+      ) : (
+        <Link
+          paddingX="1em"
+          is={RouterLink}
+          to={to}>
+          {children}
+        </Link>
+      )}
+    </>
+  );
+};
