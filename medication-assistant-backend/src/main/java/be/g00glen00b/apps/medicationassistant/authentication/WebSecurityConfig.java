@@ -32,10 +32,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .csrf()
                 //.disable()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         // @formatter:on
     }
 
