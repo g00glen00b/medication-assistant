@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MedicationQuantityTypeSeeder implements ApplicationRunner {
     private final MedicationProperties properties;
-    private final MedicationQuantityTypeService service;
+    private final MedicationQuantityTypeFacade facade;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -21,6 +21,6 @@ public class MedicationQuantityTypeSeeder implements ApplicationRunner {
             .getNames()
             .stream()
             .map(MedicationQuantityTypeInputDTO::new)
-            .forEach(service::findOrCreate);
+            .forEach(facade::findOrCreate);
     }
 }

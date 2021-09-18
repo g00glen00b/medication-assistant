@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/availability")
 @RequiredArgsConstructor
 public class MedicationAvailabilityController {
-    private final MedicationAvailabilityService service;
+    private final MedicationAvailabilityFacade facade;
 
     @GetMapping
     @ApiOperation(value = "Retrieve a list of the current authenticated user their available medication", authorizations = @Authorization("basicAuth"))
@@ -27,7 +27,7 @@ public class MedicationAvailabilityController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
     public Page<MedicationAvailabilityDTO> findAll(Pageable pageable, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
-        return service.findAllByUserId(authentication.getId(), pageable);
+        return facade.findAllByUserId(authentication.getId(), pageable);
     }
 
     @PutMapping("/{medicationId}")
@@ -37,7 +37,7 @@ public class MedicationAvailabilityController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
     public MedicationAvailabilityDTO createOrUpdate(@PathVariable UUID medicationId, @RequestBody MedicationAvailabilityInputDTO input, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
-        return service.updateAvailability(authentication.getId(), medicationId, input);
+        return facade.updateAvailability(authentication.getId(), medicationId, input);
     }
 
     private interface MedicationAvailabilityDTOPage extends Page<MedicationAvailabilityDTO> {}

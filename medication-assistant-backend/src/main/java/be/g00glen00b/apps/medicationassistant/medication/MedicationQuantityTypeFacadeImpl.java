@@ -7,18 +7,30 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MedicationQuantityTypeService {
+public class MedicationQuantityTypeFacadeImpl implements MedicationQuantityTypeFacade {
     private final MedicationQuantityTypeRepository repository;
 
+    @Override
     public Page<MedicationQuantityTypeDTO> findAll(Pageable pageable) {
         return repository
             .findAll(pageable)
             .map(MedicationQuantityTypeDTO::new);
     }
 
+    @Override
+    public Optional<MedicationQuantityTypeDTO> findById(UUID id) {
+        return repository
+            .findById(id)
+            .map(MedicationQuantityTypeDTO::new);
+    }
+
+    @Override
     @Transactional
     public MedicationQuantityTypeDTO findOrCreate(MedicationQuantityTypeInputDTO input) {
         return repository
@@ -27,6 +39,7 @@ public class MedicationQuantityTypeService {
             .orElseGet(() -> create(input));
     }
 
+    @Override
     @Transactional
     public MedicationQuantityTypeDTO create(MedicationQuantityTypeInputDTO input) {
         log.debug("Creating quantity type: {}", input.getName());

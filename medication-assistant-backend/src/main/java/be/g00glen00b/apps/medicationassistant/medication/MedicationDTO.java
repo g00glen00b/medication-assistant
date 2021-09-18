@@ -13,4 +13,9 @@ public class MedicationDTO {
         this.id = medication.getId();
         this.name = medication.getName();
     }
+
+    public MedicationDTO(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

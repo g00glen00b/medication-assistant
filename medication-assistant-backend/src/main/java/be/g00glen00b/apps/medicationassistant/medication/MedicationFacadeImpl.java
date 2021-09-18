@@ -11,9 +11,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class MedicationService {
+public class MedicationFacadeImpl implements MedicationFacade {
     private final MedicationRepository repository;
 
+    @Override
     public Page<MedicationDTO> findAll(String search, Pageable pageable) {
         String wildcardSearch = "%" + search + "%";
         return repository
@@ -21,12 +22,14 @@ public class MedicationService {
             .map(MedicationDTO::new);
     }
 
+    @Override
     public Optional<MedicationDTO> findById(UUID id) {
         return repository
             .findById(id)
             .map(MedicationDTO::new);
     }
 
+    @Override
     @Transactional
     public MedicationDTO findOrCreate(MedicationInputDTO input) {
         return repository
@@ -35,6 +38,7 @@ public class MedicationService {
             .orElseGet(() -> create(input));
     }
 
+    @Override
     @Transactional
     public MedicationDTO create(MedicationInputDTO input) {
         Medication result = repository.save(new Medication(input.getName()));

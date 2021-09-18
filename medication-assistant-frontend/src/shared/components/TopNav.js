@@ -15,6 +15,7 @@ export const TopNav = () => (
     borderBottom="muted"
     position="fixed"
     top={0}
+    elevation={1}
     background="white"
     width="100%">
     <Link

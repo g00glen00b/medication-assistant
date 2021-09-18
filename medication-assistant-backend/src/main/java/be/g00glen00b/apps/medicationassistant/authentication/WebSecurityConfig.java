@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -14,7 +13,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @RequiredArgsConstructor
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
+    private final UserFacadeImpl userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

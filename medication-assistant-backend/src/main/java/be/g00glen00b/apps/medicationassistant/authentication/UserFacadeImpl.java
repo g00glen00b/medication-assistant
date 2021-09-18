@@ -13,10 +13,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-class UserService implements UserDetailsService {
+class UserFacadeImpl implements UserDetailsService, UserFacade {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     @Transactional
     public UserInfoDTO createUser(CreateUserRequestDTO request) {
         validateUniqueEmailaddress(request.getEmail());
@@ -26,12 +27,14 @@ class UserService implements UserDetailsService {
         return new UserInfoDTO(savedUser);
     }
 
+    @Override
     public Optional<UserAuthenticationInfoDTO> findByEmail(String email) {
         return repository
             .findByEmail(email)
             .map(UserAuthenticationInfoDTO::new);
     }
 
+    @Override
     public Optional<UserInfoDTO> findById(UUID id) {
         return repository
             .findById(id)

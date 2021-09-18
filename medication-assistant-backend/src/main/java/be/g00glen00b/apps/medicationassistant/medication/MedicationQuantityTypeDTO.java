@@ -13,4 +13,9 @@ public class MedicationQuantityTypeDTO {
         this.id = quantity.getId();
         this.name = quantity.getName();
     }
+
+    public MedicationQuantityTypeDTO(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

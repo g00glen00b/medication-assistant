@@ -12,7 +12,9 @@ export const ApplicationRouteWrapper = () => {
     <>
       <TopNav/>
       <Pane
-        padding="1em"
+        background={"gray100"}
+        minHeight="calc(100vh - 53px)"
+        padding="2em"
         marginTop="53px">
         <Switch>
           {user == null && <Redirect to={`/login`} />}

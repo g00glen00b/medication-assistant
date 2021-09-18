@@ -1,19 +1,20 @@
 package be.g00glen00b.apps.medicationassistant.availability;
 
+import be.g00glen00b.apps.medicationassistant.medication.MedicationDTO;
+import be.g00glen00b.apps.medicationassistant.medication.MedicationQuantityTypeDTO;
 import lombok.Value;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Value
 public class MedicationAvailabilityDTO {
-    UUID medicationId;
+    MedicationQuantityTypeDTO quantityType;
+    MedicationDTO medication;
     BigDecimal quantity;
-    UUID quantityTypeId;
 
-    public MedicationAvailabilityDTO(MedicationAvailability availability) {
-        this.medicationId = availability.getId().getMedicationId();
+    public MedicationAvailabilityDTO(MedicationQuantityTypeDTO quantityType, MedicationDTO medication, MedicationAvailability availability) {
+        this.quantityType = quantityType;
+        this.medication = medication;
         this.quantity = availability.getQuantity();
-        this.quantityTypeId = availability.getQuantityTypeId();
     }
 }

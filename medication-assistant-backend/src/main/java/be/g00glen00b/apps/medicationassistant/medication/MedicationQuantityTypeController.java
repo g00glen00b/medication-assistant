@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/quantity-type")
 @RequiredArgsConstructor
 public class MedicationQuantityTypeController {
-    private final MedicationQuantityTypeService service;
+    private final MedicationQuantityTypeFacade facade;
 
     @GetMapping
     @ApiOperation(value = "Retrieve a list of possible quantities to be used with medications", authorizations = @Authorization("basicAuth"))
@@ -25,7 +25,7 @@ public class MedicationQuantityTypeController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
     public Page<MedicationQuantityTypeDTO> findAll(Pageable pageable) {
-        return service.findAll(pageable);
+        return facade.findAll(pageable);
     }
 
     private interface MedicationQuantityTypePage extends Page<MedicationQuantityTypeDTO> {}

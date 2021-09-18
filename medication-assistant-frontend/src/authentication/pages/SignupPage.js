@@ -1,7 +1,7 @@
 import {HeroContainer} from '../../shared/components/HeroContainer';
 import {SignupForm} from '../components/SignupForm';
 import {useState} from 'react';
-import {useCreateUserApi} from '../hooks/authenticationApiHooks';
+import {useCreateUserApi} from '../hooks/apiHooks';
 import {Alert} from 'evergreen-ui';
 
 export const SignupPage = () => {

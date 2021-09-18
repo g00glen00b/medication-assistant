@@ -7,16 +7,14 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService service;
+    private final UserFacade facade;
 
     @PostMapping
     @ApiOperation(value = "Create a new user")
@@ -25,7 +23,7 @@ public class UserController {
         @ApiResponse(code = 400, message = "Bad request", response = MessageDTO.class)
     })
     public UserInfoDTO createUser(@RequestBody CreateUserRequestDTO request) {
-        return service.createUser(request);
+        return facade.createUser(request);
     }
 
     @GetMapping("/current")
@@ -36,7 +34,7 @@ public class UserController {
         @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
     })
     public UserInfoDTO findCurrentUser(@AuthenticationPrincipal UserAuthenticationInfoDTO userDetails) {
-        return service
+        return facade
             .findById(userDetails.getId())
             .orElseThrow(() -> new UserNotFoundException("Currently authenticated user no longer exists"));
     }

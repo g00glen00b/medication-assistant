@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/api/medication")
 @RequiredArgsConstructor
 public class MedicationController {
-    private final MedicationService service;
+    private final MedicationFacade facade;
 
     @GetMapping("/query")
     @ApiOperation(value = "Retrieve a list of medication by their partial or full name", authorizations = @Authorization("basicAuth"))
@@ -26,7 +26,7 @@ public class MedicationController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
     public Page<MedicationDTO> findAll(@RequestParam(required = false, defaultValue = "") String search, Pageable pageable) {
-        return service.findAll(search, pageable);
+        return facade.findAll(search, pageable);
     }
 
     @GetMapping("/{id}")
@@ -37,7 +37,7 @@ public class MedicationController {
         @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
     })
     public MedicationDTO findById(@PathVariable UUID id) {
-        return service
+        return facade
             .findById(id)
             .orElseThrow(() -> new MedicationNotFoundException("Medication with ID '" + id + "' does not exist"));
     }
@@ -49,7 +49,7 @@ public class MedicationController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
     public MedicationDTO findOrCreate(@RequestBody MedicationInputDTO input) {
-        return service.findOrCreate(input);
+        return facade.findOrCreate(input);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
