@@ -20,7 +20,7 @@ public class MedicationQuantityTypeSeeder implements ApplicationRunner {
             .getQuantity()
             .getNames()
             .stream()
-            .map(MedicationQuantityTypeInputDTO::new)
+            .map(CreateMedicationQuantityTypeRequestDTO::new)
             .forEach(facade::findOrCreate);
     }
 }

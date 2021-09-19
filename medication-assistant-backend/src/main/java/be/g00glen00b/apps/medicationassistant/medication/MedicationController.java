@@ -48,7 +48,7 @@ public class MedicationController {
         @ApiResponse(code = 200, message = "Success", response = MedicationDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class)
     })
-    public MedicationDTO findOrCreate(@RequestBody MedicationInputDTO input) {
+    public MedicationDTO findOrCreate(@RequestBody CreateMedicationRequestDTO input) {
         return facade.findOrCreate(input);
     }
 

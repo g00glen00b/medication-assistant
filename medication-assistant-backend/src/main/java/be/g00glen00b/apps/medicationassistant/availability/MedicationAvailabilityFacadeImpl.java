@@ -7,11 +7,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.Optional;
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityFacade {
     private final MedicationAvailabilityRepository repository;
@@ -26,27 +28,55 @@ public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityF
 
     @Override
     @Transactional
-    public MedicationAvailabilityDTO updateAvailability(UUID userId, UUID medicationId, MedicationAvailabilityInputDTO input) {
-        MedicationAvailability availability = findOrCreate(userId, medicationId, input.getQuantityTypeId());
-        availability.setQuantity(input.getQuantity());
-        availability.setQuantityTypeId(input.getQuantityTypeId());
+    public MedicationAvailabilityDTO create(UUID userId, @Valid CreateMedicationAvailabilityRequestDTO input) {
+        MedicationAvailability availability = repository.save(input.mapToEntity(userId));
         return mapToDTO(availability);
     }
 
-    private MedicationAvailability findOrCreate(UUID userId, UUID medicationId, UUID quantityTypeId) {
-        MedicationAvailabilityId id = new MedicationAvailabilityId(medicationId, userId);
+    @Override
+    @Transactional
+    public MedicationAvailabilityDTO updateQuantity(UUID userId, UUID id, @Valid UpdateMedicationAvailabilityQuantityInputDTO input) {
+        MedicationAvailability availability = findEntityOrThrowException(userId, id);
+        availability.setQuantity(input.getQuantity());
+        return mapToDTO(availability);
+    }
+
+    @Override
+    @Transactional
+    public MedicationAvailabilityDTO increaseQuantity(UUID userId, UUID id) {
+        MedicationAvailability availability = findEntityOrThrowException(userId, id);
+        availability.increaseQuantityByOne();
+        return mapToDTO(availability);
+    }
+
+    @Override
+    @Transactional
+    public MedicationAvailabilityDTO decreaseQuantity(UUID userId, UUID id) {
+        MedicationAvailability availability = findEntityOrThrowException(userId, id);
+        availability.decreaseQuantityByOne();
+        return mapToDTO(availability);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID userId, UUID id) {
+        MedicationAvailability availability = findEntityOrThrowException(userId, id);
+        repository.delete(availability);
+    }
+
+    private MedicationAvailability findEntityOrThrowException(UUID userId, UUID id) {
         return repository
-            .findById(id)
-            .orElseGet(() -> repository.save(new MedicationAvailability(id, quantityTypeId)));
+            .findByIdAndUserId(id, userId)
+            .orElseThrow(() -> new MedicationAvailabilityNotFoundException("You have no medication quantity with that ID"));
     }
 
     private MedicationAvailabilityDTO mapToDTO(MedicationAvailability availability) {
         MedicationDTO medication = medicationClient
-            .findMedicationById(availability.getId().getMedicationId())
-            .orElseGet(() -> new MedicationDTO(availability.getId().getMedicationId(), "not found"));
+            .findMedicationById(availability.getMedicationId())
+            .orElse(null);
         MedicationQuantityTypeDTO quantityType = medicationClient
             .findQuantityTypeById(availability.getQuantityTypeId())
-            .orElseGet(() -> new MedicationQuantityTypeDTO(availability.getQuantityTypeId(), "not found"));
+            .orElse(null);
         return new MedicationAvailabilityDTO(quantityType, medication, availability);
     }
 }

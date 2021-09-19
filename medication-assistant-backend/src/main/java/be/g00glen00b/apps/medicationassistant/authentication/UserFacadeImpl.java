@@ -1,17 +1,19 @@
 package be.g00glen00b.apps.medicationassistant.authentication;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 class UserFacadeImpl implements UserDetailsService, UserFacade {
     private final UserRepository repository;
@@ -19,7 +21,7 @@ class UserFacadeImpl implements UserDetailsService, UserFacade {
 
     @Override
     @Transactional
-    public UserInfoDTO createUser(CreateUserRequestDTO request) {
+    public UserInfoDTO createUser(@Valid CreateUserRequestDTO request) {
         validateUniqueEmailaddress(request.getEmail());
         String hash = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getEmail(), request.getFirstName(), request.getLastName(), hash);

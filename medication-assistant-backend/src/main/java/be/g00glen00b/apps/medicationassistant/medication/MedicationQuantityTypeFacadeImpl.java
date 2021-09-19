@@ -6,12 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Validated
 @RequiredArgsConstructor
 public class MedicationQuantityTypeFacadeImpl implements MedicationQuantityTypeFacade {
     private final MedicationQuantityTypeRepository repository;
@@ -32,16 +35,14 @@ public class MedicationQuantityTypeFacadeImpl implements MedicationQuantityTypeF
 
     @Override
     @Transactional
-    public MedicationQuantityTypeDTO findOrCreate(MedicationQuantityTypeInputDTO input) {
+    public MedicationQuantityTypeDTO findOrCreate(@Valid CreateMedicationQuantityTypeRequestDTO input) {
         return repository
             .findByNameIgnoreCase(input.getName())
             .map(MedicationQuantityTypeDTO::new)
             .orElseGet(() -> create(input));
     }
 
-    @Override
-    @Transactional
-    public MedicationQuantityTypeDTO create(MedicationQuantityTypeInputDTO input) {
+    private MedicationQuantityTypeDTO create(CreateMedicationQuantityTypeRequestDTO input) {
         log.debug("Creating quantity type: {}", input.getName());
         MedicationQuantityType result = repository.save(new MedicationQuantityType(input.getName()));
         return new MedicationQuantityTypeDTO(result);

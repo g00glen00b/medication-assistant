@@ -5,11 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class MedicationFacadeImpl implements MedicationFacade {
     private final MedicationRepository repository;
@@ -31,16 +34,14 @@ public class MedicationFacadeImpl implements MedicationFacade {
 
     @Override
     @Transactional
-    public MedicationDTO findOrCreate(MedicationInputDTO input) {
+    public MedicationDTO findOrCreate(@Valid CreateMedicationRequestDTO input) {
         return repository
             .findByNameIgnoreCase(input.getName())
             .map(MedicationDTO::new)
             .orElseGet(() -> create(input));
     }
 
-    @Override
-    @Transactional
-    public MedicationDTO create(MedicationInputDTO input) {
+    private MedicationDTO create(CreateMedicationRequestDTO input) {
         Medication result = repository.save(new Medication(input.getName()));
         return new MedicationDTO(result);
     }

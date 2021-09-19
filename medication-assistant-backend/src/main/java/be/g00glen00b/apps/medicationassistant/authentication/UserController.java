@@ -47,7 +47,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
-    public MessageDTO handleInvalidUser(UserNotFoundException ex) {
+    public MessageDTO handleUserNotFound(UserNotFoundException ex) {
         return new MessageDTO(ex.getMessage());
     }
 }
