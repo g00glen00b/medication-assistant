@@ -7,19 +7,20 @@ import {Redirect} from 'react-router-dom';
 import {AuthenticationContext} from '../components/AuthenticationContext';
 
 export const LoginPage = () => {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
   const [loginInput, setLoginInput] = useState({email: null, password: null});
-
-  const {response, error} = useLoginApi(loginInput.email, loginInput.password);
   const {dispatch, state: {user}} = useContext(AuthenticationContext);
 
+  useLoginApi(loginInput.email, loginInput.password, setResponse, setError);
   useEffect(() => {
-    if (response != null) dispatch({type: 'LOGIN', payload: response.data});
+    if (response != null) dispatch({type: 'LOGIN', payload: response});
   }, [response, dispatch]);
 
   return (
     <HeroContainer>
       {error && <Alert intent="danger">
-        {error.response.data.error}
+        {error.error}
       </Alert>}
       {user != null && <Redirect to={`/app`} />}
       <LoginForm onSubmit={setLoginInput}/>

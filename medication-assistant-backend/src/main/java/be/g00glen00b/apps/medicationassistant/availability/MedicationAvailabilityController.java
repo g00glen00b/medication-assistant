@@ -9,6 +9,7 @@ import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +54,7 @@ public class MedicationAvailabilityController {
         return facade.updateQuantity(authentication.getId(), id, input);
     }
 
-    @PutMapping("/{id}/increase")
+    @PostMapping("/{id}/increase")
     @ApiOperation(value = "Increase the quantity of a user their available medication by one", authorizations = @Authorization("basicAuth"))
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success", response = MedicationAvailabilityDTO.class),
@@ -61,11 +62,11 @@ public class MedicationAvailabilityController {
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class),
         @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
     })
-    public MedicationAvailabilityDTO increaseQuantity(@PathVariable UUID id, @RequestBody @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
+    public MedicationAvailabilityDTO increaseQuantity(@PathVariable UUID id, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
         return facade.increaseQuantity(authentication.getId(), id);
     }
 
-    @PutMapping("/{id}/decrease")
+    @PostMapping("/{id}/decrease")
     @ApiOperation(value = "Decrease the quantity of a user their available medication by one", authorizations = @Authorization("basicAuth"))
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success", response = MedicationAvailabilityDTO.class),
@@ -75,6 +76,18 @@ public class MedicationAvailabilityController {
     })
     public MedicationAvailabilityDTO decreaseQuantity(@PathVariable UUID id, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
         return facade.decreaseQuantity(authentication.getId(), id);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidMedicationAvailabilityException.class)
+    public MessageDTO handleInvalidException(InvalidMedicationAvailabilityException ex) {
+        return new MessageDTO(ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(MedicationAvailabilityNotFoundException.class)
+    public MessageDTO handleNotFoundException(MedicationAvailabilityNotFoundException ex) {
+        return new MessageDTO(ex.getMessage());
     }
 
     private interface MedicationAvailabilityDTOPage extends Page<MedicationAvailabilityDTO> {}

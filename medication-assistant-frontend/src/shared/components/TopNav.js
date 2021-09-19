@@ -17,6 +17,7 @@ export const TopNav = () => (
     top={0}
     elevation={1}
     background="white"
+    zIndex={10}
     width="100%">
     <Link
       paddingRight="3em"

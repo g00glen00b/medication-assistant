@@ -1,45 +1,39 @@
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 
-export function useCreateUserApi(request) {
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+export function useCreateUserApi(request, setResponse, setError = () => {}) {
   useEffect(() => {
     if (request != null) {
       axios
         .post('/api/user', request)
-        .then(setResponse)
-        .catch(setError);
+        .then(({data}) => setResponse(data))
+        .catch(({response: {data}}) => setError(data));
     }
-  }, [request]);
-  return {response, error};
+  }, [request, setResponse, setError]);
 }
 
-export function useLoginApi(username, password) {
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+export function useLoginApi(username, password, setResponse, setError = () => {}) {
   useEffect(() => {
     if (username != null && password != null) {
       const auth = {username, password};
       axios
         .get('/api/user/current', {auth})
-        .then(setResponse)
-        .catch(setError);
+        .then(({data}) => setResponse(data))
+        .catch(({response: {data}}) => setError(data));
     }
-  }, [username, password]);
-  return {response, error};
+  }, [username, password, setResponse, setError]);
 }
 
-export function useCurrentUser(loadingUser) {
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+export function useCurrentUser(setResponse, setError = () => {}) {
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (loadingUser) {
+    if (loading) {
       axios
         .get('/api/user/current')
-        .then(setResponse)
-        .catch(setError);
+        .then(({data}) => setResponse(data))
+        .catch(({response: {data}}) => setError(data))
+        .finally(() => setLoading(false));
     }
-  }, [loadingUser]);
-  return {response, error};
+  }, [setResponse, setError, loading]);
+  return {setLoading};
 }

@@ -1,9 +1,25 @@
-import {useFindAllAvailabilitiesApi} from '../hooks/apiHooks';
-import {Heading, Pane} from 'evergreen-ui';
+import {useDecreaseAvailabilityApi, useFindAllAvailabilitiesApi, useIncreaseAvailabilityApi} from '../hooks/apiHooks';
+import {Heading, Pagination, Pane} from 'evergreen-ui';
 import {AvailabilityTable} from '../components/AvailabilityTable';
+import {useState} from 'react';
+import {useErrorHandler} from '../../shared/hooks/useErrorHandler';
 
 export const AvailabilityPage = () => {
-  const {response} = useFindAllAvailabilitiesApi(1, 10);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const [availabilitiesResponse, setAvailabilitiesResponse] = useState({});
+  const [editResponse, setEditResponse] = useState(null);
+  const {setError} = useErrorHandler();
+  useFindAllAvailabilitiesApi(page, pageSize, setAvailabilitiesResponse, setError);
+  const {setId: setIncreaseId} = useIncreaseAvailabilityApi(setEditResponse, setError);
+  const {setId: setDecreaseId} = useDecreaseAvailabilityApi(setEditResponse, setError);
+
+  if (editResponse != null) {
+    const availabilities = availabilitiesResponse.content
+      .map(availability => availability.id === editResponse.id ? editResponse : availability);
+    setAvailabilitiesResponse({...availabilitiesResponse, content: availabilities});
+    setEditResponse(null);
+  }
   return (
     <Pane>
       <Heading
@@ -14,7 +30,14 @@ export const AvailabilityPage = () => {
         fontWeight={400}>
         Medication available
       </Heading>
-      {response && response?.data && <AvailabilityTable availabilities={response.data.content} />}
+      <AvailabilityTable
+        availabilities={availabilitiesResponse?.content || []}
+        onIncrease={({id}) => setIncreaseId(id)}
+        onDecrease={({id}) => setDecreaseId(id)}/>
+      <Pagination
+        page={page}
+        totalPages={availabilitiesResponse?.totalPages || 1}
+        onPageChange={setPage} />
     </Pane>
   );
 }

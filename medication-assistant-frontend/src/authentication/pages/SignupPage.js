@@ -5,13 +5,15 @@ import {useCreateUserApi} from '../hooks/apiHooks';
 import {Alert} from 'evergreen-ui';
 
 export const SignupPage = () => {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
   const [signupInput, setSignupInput] = useState(null);
-  const {response, error} = useCreateUserApi(signupInput);
+  useCreateUserApi(signupInput, setResponse, setError);
 
   return (
     <HeroContainer>
       {error && <Alert intent="danger">
-        {error.response.data.message}
+        {error.message}
       </Alert>}
       {response && <Alert intent="success">
         Sign up was succesful. You can now log in.

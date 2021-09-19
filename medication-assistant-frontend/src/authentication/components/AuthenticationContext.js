@@ -1,31 +1,32 @@
-import {createContext, useReducer} from 'react';
+import {createContext, useEffect, useReducer, useState} from 'react';
 import {useCurrentUser} from '../hooks/apiHooks';
 
 const initialState = {
-  user: null,
-  loadingUser: true
+  user: null
 };
+
+function stateReducer(state, action) {
+  switch (action.type) {
+    case 'LOGIN':
+      return {...state, user: action.payload};
+    default:
+      return {...state};
+  }
+}
 
 export const AuthenticationContext = createContext(initialState);
 
 export const AuthenticationContextProvider = ({children}) => {
-  const [state, dispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case 'LOGIN':
-        return {...state, user: action.payload, loadingUser: false};
-      case 'NO_LOGIN':
-        return {...state, loadingUser: false};
-      default:
-        return {...state};
-    }
-  }, initialState);
-  const {response, error} = useCurrentUser(state.loadingUser);
-  if (response != null && state.loadingUser) dispatch({type: 'LOGIN', payload: response});
-  if (error != null && state.loadingUser) dispatch({type: 'NO_LOGIN'});
+  const [response, setResponse] = useState(null);
+  const [state, dispatch] = useReducer(stateReducer, initialState);
+  useCurrentUser(setResponse);
+  useEffect(() => {
+    if (response != null) dispatch({type: 'LOGIN', payload: response});
+  }, [dispatch, response]);
 
   return (
     <AuthenticationContext.Provider value={{state, dispatch}}>
-      {!state.loadingUser && children}
+      {children}
     </AuthenticationContext.Provider>
   );
 };
