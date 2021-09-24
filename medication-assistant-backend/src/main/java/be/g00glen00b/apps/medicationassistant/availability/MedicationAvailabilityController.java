@@ -42,16 +42,16 @@ public class MedicationAvailabilityController {
         return facade.create(authentication.getId(), input);
     }
 
-    @PutMapping("/{id}/quantity")
-    @ApiOperation(value = "Update the quantity of a user their available medication", authorizations = @Authorization("basicAuth"))
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Update the availability of a user their medication", authorizations = @Authorization("basicAuth"))
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "Success", response = MedicationAvailabilityDTO.class),
         @ApiResponse(code = 400, message = "Bad request", response = MessageDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class),
         @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
     })
-    public MedicationAvailabilityDTO updateQuantity(@PathVariable UUID id, @RequestBody UpdateMedicationAvailabilityQuantityInputDTO input, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
-        return facade.updateQuantity(authentication.getId(), id, input);
+    public MedicationAvailabilityDTO update(@PathVariable UUID id, @RequestBody UpdateMedicationAvailabilityInputDTO input, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
+        return facade.update(authentication.getId(), id, input);
     }
 
     @PostMapping("/{id}/increase")

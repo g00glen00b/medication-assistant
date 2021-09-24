@@ -35,9 +35,12 @@ public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityF
 
     @Override
     @Transactional
-    public MedicationAvailabilityDTO updateQuantity(UUID userId, UUID id, @Valid UpdateMedicationAvailabilityQuantityInputDTO input) {
+    public MedicationAvailabilityDTO update(UUID userId, UUID id, @Valid UpdateMedicationAvailabilityInputDTO input) {
         MedicationAvailability availability = findEntityOrThrowException(userId, id);
+        availability.setInitialQuantity(input.getInitialQuantity());
         availability.setQuantity(input.getQuantity());
+        availability.setQuantityTypeId(input.getQuantityTypeId());
+        availability.setExpiryDate(input.getExpiryDate());
         return mapToDTO(availability);
     }
 

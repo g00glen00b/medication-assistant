@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface MedicationAvailabilityFacade {
     Page<MedicationAvailabilityDTO> findAllByUserId(UUID userId, Pageable pageable);
     MedicationAvailabilityDTO create(UUID userId, @Valid CreateMedicationAvailabilityRequestDTO input);
-    MedicationAvailabilityDTO updateQuantity(UUID userId, UUID id, @Valid UpdateMedicationAvailabilityQuantityInputDTO input);
+    MedicationAvailabilityDTO update(UUID userId, UUID id, @Valid UpdateMedicationAvailabilityInputDTO input);
     MedicationAvailabilityDTO increaseQuantity(UUID userId, UUID id);
     MedicationAvailabilityDTO decreaseQuantity(UUID userId, UUID id);
     void delete(UUID userId, UUID id);
