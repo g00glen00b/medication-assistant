@@ -1,4 +1,4 @@
-import {EditIcon, IconButton, majorScale, MinusIcon, PlusIcon, Strong, Table, Text, TrashIcon} from 'evergreen-ui';
+// import {EditIcon, IconButton, majorScale, MinusIcon, PlusIcon, Strong, Table, Text, TrashIcon} from 'evergreen-ui';
 
 export const AvailabilityTable = ({availabilities = [], onIncrease = () => {}, onDecrease = () => {}, onEdit = () => {}, onDelete = () => {}}) => {
   return (

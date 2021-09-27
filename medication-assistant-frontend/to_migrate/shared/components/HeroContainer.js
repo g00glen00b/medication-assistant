@@ -11,13 +11,12 @@ export const HeroContainer = ({children}) => (
     }}>
     <aside
       style={{
-        background: blue[4],
+        background: blue[3],
         maxWidth: '35em',
         padding: '4em'
       }}>
       <header>
         <Typography.Title
-          level={2}
           style={{
             color: 'white',
             display: 'flex',
@@ -31,7 +30,7 @@ export const HeroContainer = ({children}) => (
           Medication Assistant
         </Typography.Title>
         <Typography.Title
-          level={3}
+          level={2}
           style={{
             color: 'white'
           }}>
@@ -44,8 +43,7 @@ export const HeroContainer = ({children}) => (
         display: 'flex',
         flexDirection: 'column',
         flex: 1,
-        padding: '4em',
-        boxShadow: '0 0 1em 0 rgba(0, 0, 0, .4)'
+        padding: '4em'
       }}>
       {children}
     </main>
