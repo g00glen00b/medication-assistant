@@ -19,9 +19,9 @@ export const LoginPage = () => {
 
   return (
     <HeroContainer>
-      {error && <Alert type="error">
-        {error.error}
-      </Alert>}
+      {error && <Alert
+        type="error"
+        message={error.error} />}
       {user != null && <Redirect to={`/app`} />}
       <LoginForm onSubmit={setLoginInput}/>
     </HeroContainer>
