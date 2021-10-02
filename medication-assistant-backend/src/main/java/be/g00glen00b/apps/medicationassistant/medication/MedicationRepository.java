@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface MedicationRepository extends JpaRepository<Medication, UUID> {
     Optional<Medication> findByNameIgnoreCase(String name);
-    Page<Medication> findAllByNameLike(String partialName, Pageable pageable);
+    Page<Medication> findAllByNameContainingIgnoreCase(String partialName, Pageable pageable);
 }

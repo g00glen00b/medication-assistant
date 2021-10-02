@@ -1,18 +1,19 @@
 import {useDecreaseAvailabilityApi, useFindAllAvailabilitiesApi, useIncreaseAvailabilityApi} from '../hooks/apiHooks';
-// import {Button, Heading, Pagination, Pane} from 'evergreen-ui';
 import {AvailabilityTable} from '../components/AvailabilityTable';
 import {useState} from 'react';
 import {useErrorHandler} from '../../shared/hooks/useErrorHandler';
+import {Button, Pagination, Typography} from 'antd';
 import {CreateAvailabilityDialog} from '../components/CreateAvailabilityDialog';
 
 export const AvailabilityPage = () => {
   const [page, setPage] = useState(1);
+  const [refetchCounter, setRefetchCounter] = useState(1);
   const [isCreateDialogShown, setCreateDialogShown] = useState(false);
   const pageSize = 10;
   const [availabilitiesResponse, setAvailabilitiesResponse] = useState({});
   const [editResponse, setEditResponse] = useState(null);
   const {setError} = useErrorHandler();
-  useFindAllAvailabilitiesApi(page, pageSize, setAvailabilitiesResponse, setError);
+  useFindAllAvailabilitiesApi(page, pageSize, setAvailabilitiesResponse, setError, refetchCounter);
   const {setId: setIncreaseId} = useIncreaseAvailabilityApi(setEditResponse, setError);
   const {setId: setDecreaseId} = useDecreaseAvailabilityApi(setEditResponse, setError);
 
@@ -22,43 +23,44 @@ export const AvailabilityPage = () => {
     setAvailabilitiesResponse({...availabilitiesResponse, content: availabilities});
     setEditResponse(null);
   }
+
   return (
-    <Pane>
-      <Heading
-        is="h1"
-        marginBottom="1em"
-        marginTop="1em"
-        fontSize="2em"
-        fontWeight={400}>
+    <div>
+      <Typography.Title
+        level={2}>
         Medication available
-      </Heading>
+      </Typography.Title>
       <AvailabilityTable
         availabilities={availabilitiesResponse?.content || []}
         onIncrease={({id}) => setIncreaseId(id)}
         onDecrease={({id}) => setDecreaseId(id)}/>
-      <Pane
-        display="flex"
-        flexDirection="row">
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          marginTop: '1em'
+        }}>
         <Button
-          appearance="primary"
-          marginTop="1.3333333em"
+          type="primary"
           onClick={() => setCreateDialogShown(true)}>
           Add availability
         </Button>
         <Pagination
-          page={page}
-          marginTop={0}
-          marginLeft="auto"
-          totalPages={availabilitiesResponse?.totalPages || 1}
-          onPageChange={setPage} />
-      </Pane>
+          current={page}
+          style={{
+            marginTop: 0,
+            marginLeft: 'auto'
+          }}
+          total={availabilitiesResponse?.totalElements || 1}
+          onChange={setPage} />
+      </div>
       <CreateAvailabilityDialog
         isShown={isCreateDialogShown}
-        onConfirm={() => console.log('confirm')}
-        onCloseComplete={argument => {
-          console.log('closecomplete');
+        onConfirm={() => {
+          setRefetchCounter(refetchCounter + 1);
           setCreateDialogShown(false);
-        }}/>
-    </Pane>
+        }}
+        onCancel={() => setCreateDialogShown(false)}/>
+    </div>
   );
 }

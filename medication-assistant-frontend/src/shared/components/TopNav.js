@@ -2,29 +2,34 @@
 // noinspection HtmlUnknownTarget
 
 import {GiPill} from 'react-icons/gi';
-// import {Link, Pane, Text} from 'evergreen-ui';
-import {Link as RouterLink, useLocation} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
+import {Typography} from 'antd';
+import {neutral} from '../theme/colorPalette';
 
 export const TopNav = () => (
-  <Pane
-    is="nav"
-    padding="1em"
-    display="flex"
-    flexDirection="row"
-    alignItems="center"
-    borderBottom="muted"
-    position="fixed"
-    top={0}
-    elevation={1}
-    background="white"
-    zIndex={10}
-    width="100%">
+  <nav
+    style={{
+      padding: '1em',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      position: 'fixed',
+      top: 0,
+      boxShadow: '0 0 0.5em 0 rgba(0, 0, 0, .5)',
+      background: 'white',
+      borderBottomColor: neutral[3],
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '1px',
+      zIndex: 10,
+      width: '100%'
+    }}>
     <Link
-      paddingRight="3em"
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      is={RouterLink}
+      style={{
+        paddingRight: '3em',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}
       to="/app">
       <GiPill
         style={{marginRight: '0.5em'}}/>
@@ -38,7 +43,7 @@ export const TopNav = () => (
       to="/app/schedule">
       Schedule
     </TopNavLink>
-  </Pane>
+  </nav>
 );
 
 const TopNavLink = ({children, to}) => {
@@ -48,15 +53,20 @@ const TopNavLink = ({children, to}) => {
   return (
     <>
       {isActive ? (
-        <Text
-          paddingX="1em"
-          fontWeight={500}>
+        <Typography.Text
+          strong
+          style={{
+            paddingLeft: '1em',
+            paddingRight: '1em'
+          }}>
           {children}
-        </Text>
+        </Typography.Text>
       ) : (
         <Link
-          paddingX="1em"
-          is={RouterLink}
+          style={{
+            paddingLeft: '1em',
+            paddingRight: '1em'
+          }}
           to={to}>
           {children}
         </Link>

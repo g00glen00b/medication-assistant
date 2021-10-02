@@ -19,9 +19,8 @@ public class MedicationFacadeImpl implements MedicationFacade {
 
     @Override
     public Page<MedicationDTO> findAll(String search, Pageable pageable) {
-        String wildcardSearch = "%" + search + "%";
         return repository
-            .findAllByNameLike(wildcardSearch, pageable)
+            .findAllByNameContainingIgnoreCase(search, pageable)
             .map(MedicationDTO::new);
     }
 

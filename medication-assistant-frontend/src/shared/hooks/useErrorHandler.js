@@ -1,13 +1,15 @@
 import {useEffect, useState} from 'react';
-// import {toaster} from 'evergreen-ui';
+import {notification} from 'antd';
 
 export function useErrorHandler() {
   const [error, setError] = useState(null);
   useEffect(() => {
     if (error != null) {
-      toaster.danger(error.message);
+      notification.error({
+        message: error.message
+      })
       setError(null);
     }
-  }, [error, setError]);
+  }, [error]);
   return {setError};
 }
