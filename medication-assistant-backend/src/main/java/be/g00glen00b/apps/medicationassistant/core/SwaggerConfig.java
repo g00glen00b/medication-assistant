@@ -1,8 +1,13 @@
 package be.g00glen00b.apps.medicationassistant.core;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import springfox.documentation.builders.AlternateTypeBuilder;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -28,6 +33,7 @@ public class SwaggerConfig {
             .useDefaultResponseMessages(false)
             .apiInfo(medicationAssistantApiInfo())
             .ignoredParameterTypes(AuthenticationPrincipal.class)
+            .directModelSubstitute(Pageable.class, SwaggerPageable.class)
             .select()
                 .paths(PathSelectors.any())
             .build();
@@ -59,5 +65,16 @@ public class SwaggerConfig {
     public SecurityConfiguration securityConfiguration() {
         return SecurityConfigurationBuilder.builder()
             .build();
+    }
+
+    @Getter
+    @Setter
+    private static class SwaggerPageable {
+        @ApiModelProperty(value = "Page you want to retrieve (zero-based)", example = "0")
+        private int page;
+        @ApiModelProperty(value = "Amount of records per page", example = "20")
+        private int size;
+        @ApiModelProperty("Sorting criteria formatted as property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.")
+        private String sort;
     }
 }

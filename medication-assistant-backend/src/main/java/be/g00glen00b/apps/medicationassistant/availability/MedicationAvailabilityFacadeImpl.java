@@ -29,7 +29,14 @@ public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityF
     @Override
     @Transactional
     public MedicationAvailabilityDTO create(UUID userId, @Valid CreateMedicationAvailabilityRequestDTO input) {
-        MedicationAvailability availability = repository.save(input.mapToEntity(userId));
+        MedicationDTO medication = medicationClient.findOrCreateMedication(input.getMedicationName());
+        MedicationAvailability availability = repository.save(new MedicationAvailability(
+            userId,
+            medication.getId(),
+            input.getQuantityTypeId(),
+            input.getQuantity(),
+            input.getInitialQuantity(),
+            input.getExpiryDate()));
         return mapToDTO(availability);
     }
 

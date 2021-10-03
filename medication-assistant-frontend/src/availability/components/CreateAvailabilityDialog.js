@@ -4,6 +4,7 @@ import {AvailabilityForm} from './AvailabilityForm';
 import {useCreateAvailabilityApi} from '../hooks/apiHooks';
 
 export const CreateAvailabilityDialog = ({isShown, onConfirm, onCancel}) => {
+  const formId = 'create-availability-form';
   const [availability, setAvailability] = useState(null);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -20,13 +21,14 @@ export const CreateAvailabilityDialog = ({isShown, onConfirm, onCancel}) => {
     <Modal
       visible={isShown}
       title="Create availability"
-      okButtonProps={{form: 'availability-form', key: 'submit', htmlType: 'submit'}}
+      okButtonProps={{form: formId, key: 'submit', htmlType: 'submit'}}
       okText="Create"
       onCancel={onCancel}>
       {error && <Alert
         type="error"
         message={error.message}/>}
       <AvailabilityForm
+        formId={formId}
         onSubmit={setAvailability}/>
     </Modal>
   );

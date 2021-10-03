@@ -78,6 +78,18 @@ public class MedicationAvailabilityController {
         return facade.decreaseQuantity(authentication.getId(), id);
     }
 
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete a user their medication availability", authorizations = @Authorization("basicAuth"))
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "Success"),
+        @ApiResponse(code = 401, message = "Unauthorized", response = MessageDTO.class),
+        @ApiResponse(code = 404, message = "Not found", response = MessageDTO.class)
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAvailability(@PathVariable UUID id, @AuthenticationPrincipal UserAuthenticationInfoDTO authentication) {
+        facade.delete(authentication.getId(), id);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidMedicationAvailabilityException.class)
     public MessageDTO handleInvalidException(InvalidMedicationAvailabilityException ex) {

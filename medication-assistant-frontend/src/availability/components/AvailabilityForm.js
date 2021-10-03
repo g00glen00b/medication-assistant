@@ -1,4 +1,4 @@
-import {AutoComplete, Form, InputNumber, Select} from 'antd';
+import {AutoComplete, DatePicker, Form, InputNumber, Select} from 'antd';
 import {useFindAllQuantityTypes, useMedicationQuery} from '../../medication/hooks/apiHooks';
 import {useState} from 'react';
 
@@ -14,10 +14,9 @@ function moreThanQuantityRule({getFieldValue}) {
   }
 }
 
-export const AvailabilityForm = ({onSubmit}) => {
+export const AvailabilityForm = ({formId, onSubmit, initialValues = {initialQuantity: 0, quantity: 0, medicationName: null, quantityTypeId: null, expiryDate: null}, isMedicationVisible = true}) => {
   const [form] = Form.useForm();
   const [searchValue, setSearchValue] = useState(null);
-  const [medicationId, setMedicationId] = useState(null);
   const [medicationResponse, setMedicationResponse] = useState({content: []});
   const [quantityTypeResponse, setQuantityTypeResponse] = useState({content: []});
   useMedicationQuery(searchValue, 1, 10, setMedicationResponse);
@@ -26,28 +25,23 @@ export const AvailabilityForm = ({onSubmit}) => {
 
   return (
     <Form
-      id="availability-form"
+      id={formId}
       form={form}
       layout="vertical"
       requiredMark="optional"
-      initialValues={{
-        initialQuantity: 0,
-        quantity: 0,
-        medication: null,
-        quantityType: null
-      }}
+      initialValues={initialValues}
       style={{
         width: '100%'
       }}
-      onFinish={({medication, ...rest}) => onSubmit({...rest, medicationId})}>
+      onFinish={onSubmit}>
       <div
         style={{
           display: 'grid',
           gridTemplateRows: 'repeat(3, auto)',
           gridTemplateColumns: 'repeat(2, 1fr)'
         }}>
-        <Form.Item
-          name="medication"
+        {isMedicationVisible && <Form.Item
+          name="medicationName"
           label="Medication"
           extra="For example: Dafalgan"
           rules={[{
@@ -61,9 +55,8 @@ export const AvailabilityForm = ({onSubmit}) => {
           }}>
           <AutoComplete
             options={options}
-            onSearch={setSearchValue}
-            onSelect={(_, {id}) => setMedicationId(id)}/>
-        </Form.Item>
+            onSearch={setSearchValue}/>
+        </Form.Item>}
         <Form.Item
           name="quantity"
           label="Amount of doses"
@@ -113,16 +106,32 @@ export const AvailabilityForm = ({onSubmit}) => {
           }]}
           style={{
             gridRow: 3,
-            gridColumnStart: 1,
-            gridColumnEnd: 3
+            gridColumn: 1,
+            paddingRight: '1em'
           }}>
           <Select>
             {quantityTypeResponse.content.map(({id, name}) => (
-              <Select.Option value={id}>
+              <Select.Option
+                value={id}
+                key={id}>
                 {name}
               </Select.Option>
             ))}
           </Select>
+        </Form.Item>
+        <Form.Item
+          name="expiryDate"
+          label="Expiry date"
+          extra="The date at which the medication should no longer be used"
+          style={{
+            gridRow: 3,
+            gridColumn: 2,
+            paddingLeft: '1em'
+          }}>
+          <DatePicker
+            style={{
+              width: '100%'
+            }}/>
         </Form.Item>
       </div>
     </Form>

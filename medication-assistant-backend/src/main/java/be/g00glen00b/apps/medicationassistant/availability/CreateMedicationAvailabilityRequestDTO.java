@@ -22,7 +22,7 @@ public class CreateMedicationAvailabilityRequestDTO {
     @NotNull(message = "{availability.quantityType.notNull}")
     UUID quantityTypeId;
     @NotNull(message = "{availability.medication.notNull}")
-    UUID medicationId;
+    String medicationName;
     LocalDate expiryDate;
 
     @JsonCreator
@@ -30,23 +30,12 @@ public class CreateMedicationAvailabilityRequestDTO {
         @JsonProperty("quantity") BigDecimal quantity,
         @JsonProperty("initialQuantity") BigDecimal initialQuantity,
         @JsonProperty("quantityTypeId") UUID quantityTypeId,
-        @JsonProperty("medicationId") UUID medicationId,
+        @JsonProperty("medicationName") String medicationName,
         @JsonProperty("expiryDate") LocalDate expiryDate) {
         this.quantity = quantity;
         this.initialQuantity = initialQuantity;
         this.quantityTypeId = quantityTypeId;
-        this.medicationId = medicationId;
+        this.medicationName = medicationName;
         this.expiryDate = expiryDate;
-    }
-
-    public MedicationAvailability mapToEntity(UUID userId) {
-        return new MedicationAvailability(
-            userId,
-            this.medicationId,
-            this.quantityTypeId,
-            this.quantity,
-            this.initialQuantity,
-            this.expiryDate
-        );
     }
 }

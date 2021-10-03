@@ -1,19 +1,31 @@
-import {useDecreaseAvailabilityApi, useFindAllAvailabilitiesApi, useIncreaseAvailabilityApi} from '../hooks/apiHooks';
+import {
+  useDecreaseAvailabilityApi,
+  useDeleteAvailabilityApi,
+  useFindAllAvailabilitiesApi,
+  useIncreaseAvailabilityApi
+} from '../hooks/apiHooks';
 import {AvailabilityTable} from '../components/AvailabilityTable';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useErrorHandler} from '../../shared/hooks/useErrorHandler';
-import {Button, Pagination, Typography} from 'antd';
+import {Button, Modal, Pagination, Typography} from 'antd';
 import {CreateAvailabilityDialog} from '../components/CreateAvailabilityDialog';
+import {useSuccessHandler} from '../../shared/hooks/useSuccessHandler';
+import {EditAvailabilityDialog} from '../components/EditAvailabilityDialog';
 
 export const AvailabilityPage = () => {
+  const pageSize = 10;
   const [page, setPage] = useState(1);
   const [refetchCounter, setRefetchCounter] = useState(1);
   const [isCreateDialogShown, setCreateDialogShown] = useState(false);
-  const pageSize = 10;
   const [availabilitiesResponse, setAvailabilitiesResponse] = useState({});
+  const [updatedAvailability, setUpdatedAvailability] = useState(null);
   const [editResponse, setEditResponse] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [deleteResponse, setDeleteResponse] = useState(null);
   const {setError} = useErrorHandler();
+  const {setSuccess} = useSuccessHandler();
   useFindAllAvailabilitiesApi(page, pageSize, setAvailabilitiesResponse, setError, refetchCounter);
+  const {setId: setDeleteId} = useDeleteAvailabilityApi(setDeleteResponse, setError);
   const {setId: setIncreaseId} = useIncreaseAvailabilityApi(setEditResponse, setError);
   const {setId: setDecreaseId} = useDecreaseAvailabilityApi(setEditResponse, setError);
 
@@ -23,6 +35,14 @@ export const AvailabilityPage = () => {
     setAvailabilitiesResponse({...availabilitiesResponse, content: availabilities});
     setEditResponse(null);
   }
+  useEffect(() => {
+    if (deleteResponse != null) {
+      setConfirmDeleteId(null);
+      setRefetchCounter(refetchCounter + 1);
+      setSuccess({message: 'Medication successfully deleted'});
+      setDeleteResponse(null);
+    }
+  }, [deleteResponse, refetchCounter, setConfirmDeleteId, setRefetchCounter, setSuccess]);
 
   return (
     <div>
@@ -33,7 +53,9 @@ export const AvailabilityPage = () => {
       <AvailabilityTable
         availabilities={availabilitiesResponse?.content || []}
         onIncrease={({id}) => setIncreaseId(id)}
-        onDecrease={({id}) => setDecreaseId(id)}/>
+        onDecrease={({id}) => setDecreaseId(id)}
+        onEdit={setUpdatedAvailability}
+        onDelete={({id}) => setConfirmDeleteId(id)}/>
       <div
         style={{
           display: 'flex',
@@ -51,6 +73,7 @@ export const AvailabilityPage = () => {
             marginTop: 0,
             marginLeft: 'auto'
           }}
+          pageSize={pageSize}
           total={availabilitiesResponse?.totalElements || 1}
           onChange={setPage} />
       </div>
@@ -59,8 +82,27 @@ export const AvailabilityPage = () => {
         onConfirm={() => {
           setRefetchCounter(refetchCounter + 1);
           setCreateDialogShown(false);
+          setSuccess({message: 'Medication successfully added'});
         }}
         onCancel={() => setCreateDialogShown(false)}/>
+      {updatedAvailability != null && <EditAvailabilityDialog
+        availability={updatedAvailability}
+        isShown={true}
+        onConfirm={() => {
+          setRefetchCounter(refetchCounter + 1);
+          setUpdatedAvailability(null);
+          setSuccess({message: 'Medication successfully updated'});
+        }}
+        onCancel={() => setUpdatedAvailability(null)}/>}
+      <Modal
+        visible={confirmDeleteId != null}
+        onOk={() => setDeleteId(confirmDeleteId)}
+        onCancel={() => setConfirmDeleteId(null)}
+        okType="danger"
+        okText="Yes"
+        cancelText="No">
+        Are you sure you want to delete this medication? This cannot be undone.
+      </Modal>
     </div>
   );
 }
