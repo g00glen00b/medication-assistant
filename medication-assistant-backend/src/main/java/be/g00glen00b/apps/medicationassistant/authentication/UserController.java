@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-public class UserController {
+class UserController {
     private final UserFacade facade;
 
     @PostMapping

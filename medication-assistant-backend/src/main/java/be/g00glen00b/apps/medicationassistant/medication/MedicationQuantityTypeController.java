@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/quantity-type")
 @RequiredArgsConstructor
-public class MedicationQuantityTypeController {
+class MedicationQuantityTypeController {
     private final MedicationQuantityTypeFacade facade;
 
     @GetMapping

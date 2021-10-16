@@ -5,7 +5,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+class WebConfiguration implements WebMvcConfigurer {
     // Suppressed view inspection due to index.html being copied from medication-assistant-frontend by using the maven-resources-plugin
     @SuppressWarnings("SpringMVCViewInspection")
     @Override

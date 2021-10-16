@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MedicationQuantityTypeSeeder implements ApplicationRunner {
+class MedicationQuantityTypeSeeder implements ApplicationRunner {
     private final MedicationProperties properties;
     private final MedicationQuantityTypeFacade facade;
 

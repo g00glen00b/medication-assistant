@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 @Validated
 @RequiredArgsConstructor
-public class MedicationFacadeImpl implements MedicationFacade {
+class MedicationService implements MedicationFacade {
     private final MedicationRepository repository;
 
     @Override

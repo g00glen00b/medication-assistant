@@ -18,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/availability")
 @RequiredArgsConstructor
-public class MedicationAvailabilityController {
+class MedicationAvailabilityController {
     private final MedicationAvailabilityFacade facade;
 
     @GetMapping

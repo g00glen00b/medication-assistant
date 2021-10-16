@@ -23,7 +23,7 @@ import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
 import java.util.List;
 
 @Configuration
-public class SwaggerConfig {
+class SwaggerConfiguration {
     @Bean
     public Docket medicationAssistantApi() {
         return new Docket(DocumentationType.SWAGGER_2)

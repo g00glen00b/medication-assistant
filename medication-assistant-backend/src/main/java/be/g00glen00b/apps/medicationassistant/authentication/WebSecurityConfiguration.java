@@ -11,9 +11,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @RequiredArgsConstructor
-class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
-    private final UserFacadeImpl userService;
+    private final UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

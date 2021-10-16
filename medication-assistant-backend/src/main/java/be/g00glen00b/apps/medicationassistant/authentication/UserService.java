@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @Validated
 @RequiredArgsConstructor
-class UserFacadeImpl implements UserDetailsService, UserFacade {
+class UserService implements UserDetailsService, UserFacade {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 

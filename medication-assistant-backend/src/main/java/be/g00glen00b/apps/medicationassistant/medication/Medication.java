@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Medication {
+class Medication {
     @Id
     @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
     @GeneratedValue(generator = "UUIDGenerator")

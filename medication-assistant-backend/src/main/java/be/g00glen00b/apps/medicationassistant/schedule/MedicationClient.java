@@ -1,4 +1,4 @@
-package be.g00glen00b.apps.medicationassistant.availability;
+package be.g00glen00b.apps.medicationassistant.schedule;
 
 import be.g00glen00b.apps.medicationassistant.medication.*;
 import lombok.RequiredArgsConstructor;

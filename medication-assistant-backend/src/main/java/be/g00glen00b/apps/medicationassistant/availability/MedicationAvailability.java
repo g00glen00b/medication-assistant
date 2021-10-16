@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class MedicationAvailability {
+class MedicationAvailability {
     @Id
     @GenericGenerator(name = "UUIDGenerator", strategy = "uuid2")
     @GeneratedValue(generator = "UUIDGenerator")

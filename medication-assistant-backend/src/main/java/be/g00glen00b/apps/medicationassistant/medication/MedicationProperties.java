@@ -9,7 +9,7 @@ import java.util.List;
 @Value
 @ConstructorBinding
 @ConfigurationProperties(prefix = "medicationassistant.medication")
-public class MedicationProperties {
+class MedicationProperties {
     MedicationQuantityProperties quantity;
 
     @Value

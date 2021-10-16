@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @Validated
 @RequiredArgsConstructor
-public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityFacade {
+class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     private final MedicationAvailabilityRepository repository;
     private final MedicationClient medicationClient;
 
@@ -35,7 +35,7 @@ public class MedicationAvailabilityFacadeImpl implements MedicationAvailabilityF
             medication.getId(),
             input.getQuantityTypeId(),
             input.getQuantity(),
-            input.getInitialQuantity(),
+            input.getQuantity(),
             input.getExpiryDate()));
         return mapToDTO(availability);
     }

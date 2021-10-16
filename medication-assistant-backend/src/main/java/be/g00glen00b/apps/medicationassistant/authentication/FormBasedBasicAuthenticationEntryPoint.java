@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class FormBasedBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+class FormBasedBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
     public FormBasedBasicAuthenticationEntryPoint() {
         this("Realm");
     }

@@ -16,9 +16,6 @@ public class CreateMedicationAvailabilityRequestDTO {
     @NotNull(message = "{availability.quantity.notNull}")
     @PositiveOrZero(message = "{availability.quantity.positive}")
     BigDecimal quantity;
-    @NotNull(message = "{availability.initialQuantity.notNull}")
-    @PositiveOrZero(message = "{availability.initialQuantity.positive}")
-    BigDecimal initialQuantity;
     @NotNull(message = "{availability.quantityType.notNull}")
     UUID quantityTypeId;
     @NotNull(message = "{availability.medication.notNull}")
@@ -28,12 +25,10 @@ public class CreateMedicationAvailabilityRequestDTO {
     @JsonCreator
     public CreateMedicationAvailabilityRequestDTO(
         @JsonProperty("quantity") BigDecimal quantity,
-        @JsonProperty("initialQuantity") BigDecimal initialQuantity,
         @JsonProperty("quantityTypeId") UUID quantityTypeId,
         @JsonProperty("medicationName") String medicationName,
         @JsonProperty("expiryDate") LocalDate expiryDate) {
         this.quantity = quantity;
-        this.initialQuantity = initialQuantity;
         this.quantityTypeId = quantityTypeId;
         this.medicationName = medicationName;
         this.expiryDate = expiryDate;

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface MedicationAvailabilityRepository extends JpaRepository<MedicationAvailability, UUID> {
+interface MedicationAvailabilityRepository extends JpaRepository<MedicationAvailability, UUID> {
     @Query("select a from MedicationAvailability a where a.userId = ?1")
     Page<MedicationAvailability> findAllByUserId(UUID userId, Pageable pageable);
     @Query("select a from MedicationAvailability a where a.id = ?1 and a.userId = ?2")
