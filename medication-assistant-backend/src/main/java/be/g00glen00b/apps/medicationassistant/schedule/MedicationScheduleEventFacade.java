@@ -9,7 +9,5 @@ import java.util.UUID;
 public interface MedicationScheduleEventFacade {
     MedicationScheduleEventDTO createNextEvent(UUID scheduleId, UUID userId);
     Page<MedicationScheduleEventDTO> findAllActiveByUserId(UUID userId, Pageable pageable);
-
-    @Transactional
     void deleteBySchedule(UUID scheduleId, UUID userId);
 }

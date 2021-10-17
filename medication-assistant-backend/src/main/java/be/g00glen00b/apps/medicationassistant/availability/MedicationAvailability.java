@@ -56,6 +56,14 @@ class MedicationAvailability {
     }
 
     public void decreaseQuantityByOne() {
-        setQuantity(this.quantity.subtract(BigDecimal.ONE));
+        decreaseQuantity(BigDecimal.ONE);
+    }
+
+    public void decreaseQuantity(BigDecimal quantity) {
+        setQuantity(this.quantity.subtract(quantity));
+    }
+
+    public boolean isContainingMoreOrEqualThan(BigDecimal otherQuantity) {
+        return quantity.compareTo(otherQuantity) >= 0;
     }
 }

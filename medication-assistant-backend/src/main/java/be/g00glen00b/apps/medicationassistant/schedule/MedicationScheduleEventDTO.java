@@ -13,6 +13,7 @@ import java.util.UUID;
 @Value
 public class MedicationScheduleEventDTO {
     UUID id;
+    UUID scheduleId;
     MedicationDTO medication;
     MedicationQuantityTypeDTO quantityType;
     BigDecimal quantity;
@@ -21,11 +22,13 @@ public class MedicationScheduleEventDTO {
     @JsonCreator
     public MedicationScheduleEventDTO(
         @JsonProperty("id") UUID id,
+        @JsonProperty("scheduleId") UUID scheduleId,
         @JsonProperty("medication") MedicationDTO medication,
         @JsonProperty("quantityType") MedicationQuantityTypeDTO quantityType,
         @JsonProperty("quantity") BigDecimal quantity,
         @JsonProperty("time") LocalDateTime time) {
         this.id = id;
+        this.scheduleId = scheduleId;
         this.medication = medication;
         this.quantityType = quantityType;
         this.quantity = quantity;
@@ -33,6 +36,6 @@ public class MedicationScheduleEventDTO {
     }
 
     public MedicationScheduleEventDTO(MedicationScheduleEvent event, MedicationDTO medication, MedicationQuantityTypeDTO quantityType) {
-        this(event.getId(), medication, quantityType, event.getSchedule().getQuantity(), event.getTime());
+        this(event.getId(), event.getSchedule().getId(), medication, quantityType, event.getSchedule().getQuantity(), event.getTime());
     }
 }

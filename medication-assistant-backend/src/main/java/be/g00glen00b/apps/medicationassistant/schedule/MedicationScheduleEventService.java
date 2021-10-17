@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ class MedicationScheduleEventService implements MedicationScheduleEventFacade {
     private final MedicationScheduleEventRepository repository;
     private final MedicationScheduleRepository scheduleRepository;
     private final MedicationClient medicationClient;
+    private final List<MedicationScheduleEventCompleteListener> completeListeners;
 
     @Override
     @Transactional
@@ -49,10 +51,18 @@ class MedicationScheduleEventService implements MedicationScheduleEventFacade {
     @Transactional
     public MedicationScheduleEvent createNextEvent(MedicationSchedule schedule) {
         Optional<MedicationScheduleEvent> lastEvent = findLastEvent(schedule);
-        lastEvent.ifPresent(MedicationScheduleEvent::deactivate);
+        lastEvent.ifPresent(this::deactivateCurrentEvent);
         return lastEvent
             .flatMap(MedicationScheduleEvent::next)
             .orElseGet(() -> new MedicationScheduleEvent(schedule));
+    }
+
+    @Transactional
+    public void deactivateCurrentEvent(MedicationScheduleEvent event) {
+        event.deactivate();
+        MedicationScheduleEventDTO eventDTO = mapTODTO(event);
+        MedicationScheduleCompletedEventDTO completedEventDTO = new MedicationScheduleCompletedEventDTO(event.getSchedule().getUserId(), eventDTO);
+        completeListeners.forEach(listener -> listener.listen(completedEventDTO));
     }
 
     public Optional<MedicationScheduleEvent> findLastEvent(MedicationSchedule schedule) {
