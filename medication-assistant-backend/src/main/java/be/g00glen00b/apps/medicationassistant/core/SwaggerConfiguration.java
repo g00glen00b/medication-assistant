@@ -61,7 +61,7 @@ class SwaggerConfiguration {
         return new ApiInfoBuilder().title("Medication Assistant API").build();
     }
 
-    @Bean
+    @Bean("swaggerSecurityConfiguration")
     public SecurityConfiguration securityConfiguration() {
         return SecurityConfigurationBuilder.builder()
             .build();

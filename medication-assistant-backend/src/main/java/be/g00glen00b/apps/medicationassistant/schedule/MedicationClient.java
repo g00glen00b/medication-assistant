@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
+@Component("scheduleMedicationClient")
 @RequiredArgsConstructor
 class MedicationClient {
     private final MedicationFacade medicationFacade;
