@@ -41,7 +41,7 @@ class MedicationScheduleEvent {
     }
 
     public static Optional<MedicationScheduleEvent> create(MedicationSchedule schedule, LocalDate date) {
-        if (date.isAfter(schedule.getEndingAt()))  {
+        if (schedule.getEndingAt() != null && date.isAfter(schedule.getEndingAt()))  {
             return Optional.empty();
         } else {
             return Optional.of(new MedicationScheduleEvent(schedule, date.atTime(schedule.getTime())));

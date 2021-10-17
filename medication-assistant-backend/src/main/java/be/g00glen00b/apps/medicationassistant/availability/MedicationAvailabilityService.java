@@ -3,6 +3,7 @@ package be.g00glen00b.apps.medicationassistant.availability;
 import be.g00glen00b.apps.medicationassistant.core.UnsupportedBinaryOperator;
 import be.g00glen00b.apps.medicationassistant.medication.MedicationDTO;
 import be.g00glen00b.apps.medicationassistant.medication.MedicationQuantityTypeDTO;
+import be.g00glen00b.apps.medicationassistant.notification.NotificationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     private static final Pageable FIRST_THOUSAND_RECORDS_SORTED_BY_EXPIRY_DATE = PageRequest.of(0, 1000, SORT_BY_EXPIRY_DATE);
     private final MedicationAvailabilityRepository repository;
     private final MedicationClient medicationClient;
+    private final NotificationClient notificationClient;
     private final Clock clock;
 
     @Override
@@ -85,7 +87,9 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
             .stream()
             .reduce(quantity, this::decreaseQuantity, new UnsupportedBinaryOperator<>());
         if (!isZero(remainingQuantity)) {
-            // TODO: Alert user that there's no more medication available!
+            medicationClient
+                .findMedicationById(medicationId)
+                .ifPresent(medication -> notificationClient.createUnavailable(userId, medication));
         }
     }
 
@@ -116,7 +120,7 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
             .orElseThrow(() -> new MedicationAvailabilityNotFoundException("You have no medication quantity with that ID"));
     }
 
-    private MedicationAvailabilityDTO mapToDTO(MedicationAvailability availability) {
+    public MedicationAvailabilityDTO mapToDTO(MedicationAvailability availability) {
         MedicationDTO medication = medicationClient
             .findMedicationById(availability.getMedicationId())
             .orElse(null);
