@@ -1,0 +1,16 @@
+<h2 class="mat-headline">Medication inventory</h2>
+<mediminder-availability-list
+  infiniteScroll
+  [infiniteScrollDistance]="0.8"
+  [infiniteScrollThrottle]="200"
+  (scrolled)="findNextPage()"
+  [availabilities]="allAvailabilities"
+  (onUpdate)="updateAvailability($event)"
+  (onDelete)="deleteAvailability($event)">
+</mediminder-availability-list>
+<a
+  mat-fab
+  color="primary"
+  [routerLink]="['/inventory/create']">
+  <mat-icon>add</mat-icon>
+</a>

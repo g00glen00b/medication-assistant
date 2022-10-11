@@ -1,0 +1,78 @@
+<table
+  mat-table
+  *ngIf="schedules.length > 0"
+  [dataSource]="schedules">
+
+  <ng-container matColumnDef="name">
+    <th
+      mat-header-cell
+      *matHeaderCellDef>
+      Medication
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let schedule">
+      <strong>{{schedule.medication.name}}</strong>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <th
+      mat-header-cell
+      *matHeaderCellDef>
+      Description
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let schedule">
+      {{schedule.description}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="when">
+    <th
+      mat-header-cell
+      *matHeaderCellDef>
+      When
+    </th>
+    <td
+      mat-cell
+      *matCellDef="let schedule">
+      {{schedule.quantity}} {{schedule.medication.quantityType.name}} every
+      <mediminder-readable-duration [duration]="schedule.interval"></mediminder-readable-duration>
+      at {{schedule.time}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th
+      class="actions"
+      mat-header-cell
+      *matHeaderCellDef>
+      &nbsp;
+    </th>
+    <td
+      class="actions"
+      mat-cell
+      *matCellDef="let schedule">
+      <button
+        mat-icon-button
+        (click)="update(schedule)">
+        <mat-icon fontSet="material-icons-outlined">
+          edit
+        </mat-icon>
+      </button>
+      <button
+        color="warn"
+        mat-icon-button
+        (click)="delete(schedule)">
+        <mat-icon fontSet="material-icons-outlined">
+          delete
+        </mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+</table>

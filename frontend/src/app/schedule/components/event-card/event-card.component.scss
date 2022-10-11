@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+@import '../../../../custom-theme-variables';
+
+mat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card-title strong {
+  color: mat.get-color-from-palette($primary-theme, 300);
+  font-size: 1.5em;
+}
+
+mat-card-subtitle {
+  color: inherit;
+  font-weight: 500;
+}

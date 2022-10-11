@@ -1,0 +1,13 @@
+<ng-container
+  *ngIf="source == null || source.length == 0">
+  <mat-icon
+    inline
+    color="primary"
+    fontSet="material-icons-outlined">
+    {{icon}}
+  </mat-icon>
+  <h1 class="mat-headline">
+    {{title}}
+  </h1>
+  <p>{{text}}</p>
+</ng-container>

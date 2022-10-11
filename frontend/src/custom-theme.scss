@@ -1,0 +1,25 @@
+@use '@angular/material' as mat;
+@include mat.core();
+@import 'custom-theme-variables';
+
+.mat-snack-bar-container.warn-snackbar {
+  background-color: mat.get-color-from-palette($warn-theme, 100);
+  color: mat.get-contrast-color-from-palette($warn-theme, 100);
+}
+
+.mat-snack-bar-container.warn-snackbar .mat-button {
+  color: mat.get-color-from-palette($warn-theme, 700);
+}
+
+.mat-snack-bar-container.success-snackbar {
+  background-color: mat.get-color-from-palette($success-theme, 300);
+  color: mat.get-contrast-color-from-palette($success-theme, 300);
+}
+
+.mat-snack-bar-container.success-snackbar .mat-button {
+  color: mat.get-color-from-palette($success-theme, 700);
+}
+
+@include mat.all-component-themes($theme);
+
+

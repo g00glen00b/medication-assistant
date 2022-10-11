@@ -1,0 +1,50 @@
+<mat-card>
+  <mat-card-title-group>
+    <mat-card-subtitle>
+      <ng-container [ngSwitch]="notification?.type">
+        <strong
+          class="info"
+          *ngSwitchCase="'INFO'">
+          <mat-icon
+            inline
+            fontSet="material-icons-outlined">
+            info
+          </mat-icon>
+          Info
+        </strong>
+        <strong
+          class="warning"
+          *ngSwitchCase="'WARNING'">
+          <mat-icon
+            inline
+            fontSet="material-icons-outlined">
+            warning_amber
+          </mat-icon>
+          Warning
+        </strong>
+        <strong
+          class="error"
+          *ngSwitchCase="'ERROR'">
+          <mat-icon
+            inline
+            fontSet="material-icons-outlined">
+            error
+          </mat-icon>
+          Error
+        </strong>
+      </ng-container>
+      {{formattedDate}} ago
+    </mat-card-subtitle>
+  </mat-card-title-group>
+  <mat-card-content>
+    {{notification.message}}
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-button
+      [color]="color"
+      (click)="dismiss()">
+      DISMISS
+    </button>
+  </mat-card-actions>
+</mat-card>

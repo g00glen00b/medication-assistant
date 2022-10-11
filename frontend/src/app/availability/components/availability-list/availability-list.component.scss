@@ -1,0 +1,24 @@
+:host {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(15em, 1fr));
+  margin-bottom: 2em;
+}
+
+@media screen and (max-width: 1300px) {
+  :host {
+    grid-template-columns: repeat(3, minmax(15em, 1fr));
+  }
+}
+
+@media screen and (max-width: 1060px) {
+  :host {
+    grid-template-columns: repeat(2, minmax(15em, 1fr));
+  }
+}
+
+@media screen and (max-width: 800px) {
+  :host {
+    grid-template-columns: repeat(1, minmax(15em, 1fr));
+  }
+}

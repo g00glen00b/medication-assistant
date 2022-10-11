@@ -1,0 +1,145 @@
+<form [formGroup]="form" (submit)="submit()">
+  <section>
+    <mat-form-field appearance="fill">
+      <mat-label>Medication</mat-label>
+      <input
+        matInput
+        required
+        type="text"
+        [matAutocomplete]="medicationAutocomplete"
+        placeholder="Sustanon 250ml"
+        formControlName="medication" />
+      <mat-autocomplete
+        #medicationAutocomplete="matAutocomplete"
+        [displayWith]="getMedicationName">
+        <mat-option
+          *ngFor="let medication of suggestedMedications"
+          [value]="medication">
+          {{medication.name}}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-hint *ngIf="form.get('medication')?.enabled">
+        Enter the name of the medication you take
+      </mat-hint>
+      <mat-hint *ngIf="form.get('medication')?.disabled">
+        Editing the medication is not allowed. If you picked the wrong medication, then delete this one and create a new schedule
+      </mat-hint>
+      <mat-error *ngIf="form.get('medication')?.errors?.['required']">
+        The name of the medication you take is required
+      </mat-error>
+      <mat-error *ngIf="form.get('medication')?.errors?.['autocompleteSelected']">
+        Please select an already existing medication. If you can't find the medication in the list, then add it to your inventory first
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Dose</mat-label>
+      <input
+        type="number"
+        required
+        matInput
+        formControlName="quantity"/>
+      <mat-hint>Enter the amount of medication you have to take</mat-hint>
+      <mat-error *ngIf="form.get('quantity')?.errors?.['required']">
+        Please enter the amount of capsules, milliliter, ... you have left
+      </mat-error>
+      <mat-error *ngIf="form.get('quantity')?.errors?.['min']">
+        You can't select a negative quantity
+      </mat-error>
+    </mat-form-field>
+  </section>
+  <section>
+    <mat-form-field appearance="fill">
+      <mat-label>Period</mat-label>
+      <mat-date-range-input
+        formGroupName="period"
+        [rangePicker]="periodPicker">
+        <input
+          matStartDate
+          formControlName="start"
+          placeholder="Start date" />
+        <input
+          matEndDate
+          formControlName="end"
+          placeholder="End date" />
+      </mat-date-range-input>
+      <mat-hint>Enter the date that the medication expires</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="periodPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #periodPicker></mat-date-range-picker>
+      <mat-error *ngIf="form.get('expiryDate')?.errors?.['required']">
+        Please enter the date on which the medication expires
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Time</mat-label>
+      <input
+        type="time"
+        required
+        matInput
+        formControlName="time"/>
+      <mat-hint>Enter the time at which you have to take the medication</mat-hint>
+      <mat-error *ngIf="form.get('time')?.errors?.['required']">
+        Please enter the time at which you have to take the medication
+      </mat-error>
+    </mat-form-field>
+  </section>
+  <section formGroupName="interval">
+    <mat-form-field appearance="fill">
+      <mat-label>Interval</mat-label>
+      <input
+        type="number"
+        required
+        matInput
+        formControlName="amount" />
+      <mat-hint>Enter the number of days, weeks, months, ... between each intake</mat-hint>
+      <mat-error *ngIf="form.get('interval')?.get('amount')?.errors?.['required']">
+        Please enter the amount of days, weeks, months, ... between each intake
+      </mat-error>
+      <mat-error *ngIf="form.get('interval')?.get('amount')?.errors?.['min']">
+        You can't select a negative interval
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Interval type</mat-label>
+      <mat-select
+        formControlName="type">
+        <mat-option
+          *ngFor="let intervalType of intervalTypes"
+          [value]="intervalType">
+          {{intervalType}}
+        </mat-option>
+      </mat-select>
+      <mat-hint>
+        Enter the type of the interval
+      </mat-hint>
+      <mat-error *ngIf="form.get('interval')?.get('type')?.errors?.['required']">
+        Please enter an interval type
+      </mat-error>
+    </mat-form-field>
+  </section>
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      formControlName="description">
+      </textarea>
+    <mat-hint>
+      Enter an (optional) description for more information about the intake. For example, do you have to take the medication on an empty stomach or not, do you have to alternate the injection side, ...
+    </mat-hint>
+    <mat-error *ngIf="form.get('description')?.errors?.['maxlength']">
+      We don't allow a description longer than 256 characters
+    </mat-error>
+  </mat-form-field>
+
+
+  <button
+    color="primary"
+    type="submit"
+    mat-raised-button>
+    {{buttonText}}
+  </button>
+  <button
+    mat-button
+    (click)="cancel()">
+    CANCEL
+  </button>
+</form>

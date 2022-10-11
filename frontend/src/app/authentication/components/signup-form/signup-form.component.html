@@ -1,0 +1,92 @@
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>E-mail</mat-label>
+    <input
+      matInput
+      required
+      type="email"
+      placeholder="me@example.org"
+      formControlName="email"/>
+    <mat-hint>How can we contact you?</mat-hint>
+    <mat-error *ngIf="form.get('email')?.errors?.['email']">
+      Please enter a valid e-mail address
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.errors?.['required']">
+      Please enter a valid e-mail address
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.errors?.['emailUnique']">
+      This e-mail address has already been used
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.errors?.['maxlength']">
+      We don't allow e-mail addresses longer than 256 characters
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input
+      matInput
+      type="text"
+      placeholder="eg. Pablo D. McMullin"
+      formControlName="name" />
+    <mat-hint>How can we call you?</mat-hint>
+    <mat-error *ngIf="form.get('name')?.errors?.['maxlength']">
+      We don't allow names longer than 256 characters
+    </mat-error>
+  </mat-form-field>
+  <ng-container formGroupName="passwords">
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        required
+        type="password"
+        placeholder="Password"
+        formControlName="password" />
+      <mat-hint>Please choose a strong password</mat-hint>
+      <mat-error *ngIf="form.get('passwords')?.get('password')?.errors?.['required']">
+        Please enter a password
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Repeat password</mat-label>
+      <input
+        matInput
+        required
+        type="password"
+        placeholder="Password"
+        formControlName="repeatPassword" />
+      <mat-hint>Repeat the same password again</mat-hint>
+      <mat-error *ngIf="form.get('passwords')?.get('repeatPassword')?.errors?.['required']">
+        Please repeat the same password
+      </mat-error>
+    </mat-form-field>
+    <mat-error *ngIf="form.get('passwords')?.errors?.['samePassword']">
+      The passwords do not match
+    </mat-error>
+  </ng-container>
+  <mat-form-field appearance="fill">
+    <mat-label>Timezone</mat-label>
+    <mat-select
+      formControlName="timezone">
+      <mat-option
+        *ngFor="let timezone of timezones"
+        [value]="timezone">
+        {{timezone}}
+      </mat-option>
+    </mat-select>
+    <mat-hint>In which timezone do you live?</mat-hint>
+    <mat-error *ngIf="form.get('timezone')?.errors?.['required']">
+      We don't allow names longer than 256 characters
+    </mat-error>
+  </mat-form-field>
+  <button
+    color="primary"
+    mat-raised-button>
+    SIGN UP
+  </button>
+  <a
+    [routerLink]="['/authentication/login']"
+    mat-button>
+    I ALREADY HAVE AN ACCOUNT
+  </a>
+</form>

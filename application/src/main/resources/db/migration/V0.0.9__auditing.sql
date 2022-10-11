@@ -1,0 +1,12 @@
+alter table "user" add column created_date timestamp default current_timestamp;
+alter table "user" add column last_modified_date timestamp default current_timestamp;
+alter table "medication" add column created_date timestamp default current_timestamp;
+alter table "medication" add column last_modified_date timestamp default current_timestamp;
+alter table "medication_quantity" add column created_date timestamp default current_timestamp;
+alter table "medication_quantity" add column last_modified_date timestamp default current_timestamp;
+alter table "medication_availability" add column created_date timestamp default current_timestamp;
+alter table "medication_availability" add column last_modified_date timestamp default current_timestamp;
+alter table "medication_schedule" add column created_date timestamp default current_timestamp;
+alter table "medication_schedule" add column last_modified_date timestamp default current_timestamp;
+alter table "medication_schedule_completed_event" add column created_date timestamp default current_timestamp;
+alter table "medication_schedule_completed_event" add column last_modified_date timestamp default current_timestamp;

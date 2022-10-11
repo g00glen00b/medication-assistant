@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+@import '../../../../custom-theme-variables';
+
+mat-card-content {
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+mat-spinner {
+  margin-bottom: 1em;
+}
+
+span.warning {
+  color: mat.get-color-from-palette($warn-theme, 700);
+}

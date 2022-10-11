@@ -1,0 +1,9 @@
+<h1 class="mat-headline" *ngIf="availability != null">
+  Edit {{availability.medication.name}}
+</h1>
+<mediminder-availability-form
+  *ngIf="availability != null"
+  [availability]="availability"
+  (onAvailability)="update($event)"
+  (onCancel)="cancel()">
+</mediminder-availability-form>

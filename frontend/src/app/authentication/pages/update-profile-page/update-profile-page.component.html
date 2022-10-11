@@ -1,0 +1,17 @@
+<h2 class="mat-headline">Profile</h2>
+
+<mat-card *ngIf="user != null">
+  <h3 class="mat-title">Basic information</h3>
+  <mediminder-update-profile-form
+    [user]="user"
+    [timezones]="timezones"
+    (onUpdate)="updateProfile($event)">
+  </mediminder-update-profile-form>
+</mat-card>
+
+<mat-card *ngIf="user != null">
+  <h3 class="mat-title">Credentials</h3>
+  <mediminder-update-credentials-form
+    (onUpdate)="updateCredentials($event)">
+  </mediminder-update-credentials-form>
+</mat-card>

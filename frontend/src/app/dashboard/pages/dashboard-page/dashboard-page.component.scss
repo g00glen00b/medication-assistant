@@ -1,0 +1,28 @@
+:host {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+  grid-gap: 2em;
+}
+
+h1 {
+  grid-column: 1/-1;
+  grid-row: 1;
+}
+
+section:first-child {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+section:last-child {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+@media screen and (max-width: 1000px) {
+  :host {
+    display: flex;
+    flex-direction: column;
+  }
+}

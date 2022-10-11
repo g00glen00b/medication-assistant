@@ -1,0 +1,12 @@
+<mediminder-availability-card
+  *ngFor="let availability of availabilities"
+  [availability]="availability"
+  (onUpdate)="update($event)"
+  (onDelete)="delete($event)">
+</mediminder-availability-card>
+<mediminder-empty-state
+  [source]="availabilities"
+  icon="assignment"
+  title="Nothing in your inventory"
+  text="Please add some medication to your inventory first">
+</mediminder-empty-state>

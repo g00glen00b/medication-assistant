@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-content>
+    <mat-spinner
+      mode="determinate"
+      [color]="progressColor"
+      [value]="quantityPercentage">
+    </mat-spinner>
+    <strong>{{availability.medication.name}}</strong>
+    <p>
+      <span [ngClass]="{'warning': showQuantityWarning}">
+        {{availability.quantity}} of {{availability.initialQuantity}}</span>
+        {{availability.medication.quantityType.name}} left<br />
+        Expires on <span [ngClass]="{'warning': showExpiryWarning}">{{availability.expiryDate}}</span>
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-button
+      (click)="update(availability)">
+      EDIT
+    </button>
+    <button
+      color="warn"
+      mat-button
+      (click)="delete(availability)">
+      DELETE
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-title-group>
+    <mat-card-title><strong>{{event.quantity}}</strong> {{event.medication.quantityType.name}}</mat-card-title>
+    <mat-card-subtitle>{{event.medication.name}}</mat-card-subtitle>
+    <mat-checkbox
+      color="warn"
+      [checked]="event.completedDate != null"
+      [disabled]="event.completedDate != null"
+      [disableRipple]="event.completedDate != null"
+      [class.mat-checkbox-disabled]="false"
+      (change)="complete()">
+    </mat-checkbox>
+  </mat-card-title-group>
+  <mat-card-content>
+    {{event.description}}
+  </mat-card-content>
+</mat-card>

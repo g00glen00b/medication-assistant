@@ -1,0 +1,39 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field, button {
+  margin-bottom: 1.5em;
+}
+
+form section {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  width: 100%;
+}
+
+form section mat-form-field {
+  width: 100%;
+}
+
+form section mat-form-field:first-child {
+  margin-right: 0.7em;
+}
+
+form section mat-form-field:last-child {
+  margin-left: 0.7em;
+}
+
+@media screen and (max-width: 900px) {
+  form section {
+    flex-direction: column;
+  }
+
+  form section mat-form-field:first-child,
+  form section mat-form-field:last-child {
+    margin-right: 0;
+    margin-left: 0;
+  }
+}

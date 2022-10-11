@@ -1,0 +1,18 @@
+<mat-sidenav-container>
+  <mat-sidenav
+    mode="side"
+    [opened]="showNavigation">
+    <h1 class="mat-headline">
+      <mat-icon
+        color="warn"
+        fontSet="material-icons-outlined">
+        medication
+      </mat-icon>
+      Mediminder
+    </h1>
+    <mediminder-navigation></mediminder-navigation>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

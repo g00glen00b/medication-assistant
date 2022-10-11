@@ -1,0 +1,44 @@
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>E-mail</mat-label>
+    <input
+      matInput
+      required
+      type="email"
+      placeholder="me@example.org"
+      formControlName="email" />
+    <mat-hint>Enter the same e-mail you used during registration</mat-hint>
+    <mat-error *ngIf="form.get('email')?.errors?.['required']">
+      Please enter a valid e-mail address
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.errors?.['maxlength']">
+      We don't allow e-mail addresses longer than 256 character
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.errors?.['email']">
+      Please enter a valid e-mail address
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Password</mat-label>
+    <input
+      matInput
+      required
+      type="password"
+      placeholder="Password"
+      formControlName="password" />
+    <mat-hint>Enter the same password you used during registration</mat-hint>
+    <mat-error *ngIf="form.get('password')?.errors?.['required']">
+      Please enter your password
+    </mat-error>
+  </mat-form-field>
+  <button
+    color="primary"
+    mat-raised-button>
+    LOG IN
+  </button>
+  <a
+    [routerLink]="['/authentication/signup']"
+    mat-button>
+    SIGN UP
+  </a>
+</form>

@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+@import '../../../../custom-theme-variables';
+
+.active, .active:hover, .active:focus {
+  background-color: mat.get-color-from-palette($primary-theme, 100);
+  color: mat.get-contrast-color-from-palette($primary-theme, 100);
+  font-weight: 500;
+}

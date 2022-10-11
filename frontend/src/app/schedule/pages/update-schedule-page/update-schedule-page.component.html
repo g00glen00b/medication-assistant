@@ -1,0 +1,9 @@
+<h1 class="mat-headline" *ngIf="schedule != null">
+  Edit schedule for {{schedule.medication.name}}
+</h1>
+<mediminder-schedule-form
+  *ngIf="schedule != null"
+  [schedule]="schedule"
+  (onCancel)="cancel()"
+  (onSchedule)="update($event)">
+</mediminder-schedule-form>

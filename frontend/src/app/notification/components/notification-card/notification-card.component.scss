@@ -1,0 +1,30 @@
+@use '@angular/material' as mat;
+@import '../../../../custom-theme-variables';
+
+.info {
+  color: mat.get-color-from-palette($primary-theme, 500);
+}
+
+.warning,
+.error {
+  color: mat.get-color-from-palette($warn-theme, 500);
+}
+
+.info,
+.warning,
+.error {
+  align-items: center;
+  display: inline-flex;
+  margin-right: 0.3em;
+}
+
+.info mat-icon,
+.warning mat-icon,
+.error mat-icon {
+  margin-right: 0.3em;
+}
+
+mat-card-subtitle {
+  display: flex;
+  align-items: center;
+}

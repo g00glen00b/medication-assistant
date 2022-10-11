@@ -1,0 +1,115 @@
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Medication</mat-label>
+    <input
+      matInput
+      required
+      type="text"
+      [matAutocomplete]="medicationAutocomplete"
+      placeholder="Sustanon 250ml"
+      formControlName="medication" />
+    <mat-autocomplete
+      #medicationAutocomplete="matAutocomplete"
+      [displayWith]="getMedicationName">
+      <mat-option
+        *ngFor="let medication of suggestedMedications"
+        [value]="medication">
+        {{medication.name}}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-hint *ngIf="form.get('medication')?.enabled">
+      Enter the name of the medication you take
+    </mat-hint>
+    <mat-hint *ngIf="form.get('medication')?.disabled">
+      Editing the name of the medication is not allowed. If you picked the wrong medication, then delete this one and add a new medication to your inventory
+    </mat-hint>
+    <mat-error *ngIf="form.get('medication')?.errors?.['required']">
+      The name of the medication you take is required
+    </mat-error>
+    <mat-error *ngIf="form.get('medication')?.errors?.['maxlength']">
+      We don't allow names longer than 256 characters
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Quantity type</mat-label>
+    <mat-select
+      [compareWith]="isQuantityTypeIdEqual"
+      formControlName="quantityType">
+      <mat-option
+        *ngFor="let quantityType of quantityTypes"
+        [value]="quantityType">
+        {{quantityType.name}}
+      </mat-option>
+    </mat-select>
+    <mat-hint *ngIf="form.get('quantityType')?.enabled">
+      Enter the type of quantity of the medication. Are they a number of a capsules (#)? A liquid (ml)? <br />
+    </mat-hint>
+    <mat-hint *ngIf="form.get('quantityType')?.disabled">
+      Editing the quantity type is not allowed. If you picked the wrong medication, then delete this one and add a new medication to your inventory
+    </mat-hint>
+    <mat-error *ngIf="form.get('quantityType')?.errors?.['required']">
+      Please enter a quantity type
+    </mat-error>
+  </mat-form-field>
+  <ng-container formGroupName="quantities">
+    <mat-form-field appearance="fill">
+      <mat-label>Quantity</mat-label>
+      <input
+        type="number"
+        required
+        matInput
+        formControlName="quantity"/>
+      <mat-hint>Enter the current quantity of the medication or a best guess estimation. You can update the quantity later on</mat-hint>
+      <mat-error *ngIf="form.get('quantities')?.get('quantity')?.errors?.['required']">
+        Please enter the amount of capsules, milliliter, ... you have left
+      </mat-error>
+      <mat-error *ngIf="form.get('quantities')?.get('quantity')?.errors?.['min']">
+        You can't select a negative quantity
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Initial quantity</mat-label>
+      <input
+        type="number"
+        required
+        matInput
+        formControlName="initialQuantity"/>
+      <mat-hint>Enter the initial quantity of the medication</mat-hint>
+      <mat-error *ngIf="form.get('quantities')?.get('initialQuantity')?.errors?.['required']">
+        Please enter the initial amount of capsules, milliliters, ... of the medication when new
+      </mat-error>
+      <mat-error *ngIf="form.get('quantities')?.get('initialQuantity')?.errors?.['min']">
+        You can't select a negative quantity
+      </mat-error>
+    </mat-form-field>
+    <mat-error *ngIf="form.get('quantities')?.errors?.['quantityComparison']">
+      The available amount of medication should be less than the initial amount
+    </mat-error>
+  </ng-container>
+  <mat-form-field appearance="fill">
+    <mat-label>Expiry date</mat-label>
+    <input
+      required
+      matInput
+      formControlName="expiryDate"
+      [min]="minimumExpiryDate"
+      [matDatepicker]="expiryDatepicker"/>
+    <mat-datepicker-toggle matSuffix [for]="expiryDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #expiryDatepicker></mat-datepicker>
+    <mat-hint>Enter the date that the medication expires</mat-hint>
+    <mat-error *ngIf="form.get('expiryDate')?.errors?.['required']">
+      Please enter the date on which the medication expires
+    </mat-error>
+  </mat-form-field>
+  <button
+    color="primary"
+    type="submit"
+    mat-raised-button>
+    {{buttonText}}
+  </button>
+  <button
+    mat-button
+    (click)="cancel()">
+    CANCEL
+  </button>
+</form>

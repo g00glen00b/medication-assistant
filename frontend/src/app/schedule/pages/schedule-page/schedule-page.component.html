@@ -1,0 +1,21 @@
+<h2 class="mat-headline">Schedules</h2>
+<mat-card
+  *ngIf="allSchedules.length > 0">
+  <mediminder-schedule-table
+    [schedules]="allSchedules"
+    (onDelete)="deleteSchedule($event)"
+    (onUpdate)="updateSchedule($event)">
+  </mediminder-schedule-table>
+</mat-card>
+<mediminder-empty-state
+  [source]="allSchedules"
+  icon="event_repeat"
+  title="No schedules yet"
+  text="Create your first schedule">
+</mediminder-empty-state>
+<a
+  mat-fab
+  color="primary"
+  [routerLink]="['/schedule/create']">
+  <mat-icon>add</mat-icon>
+</a>

@@ -1,0 +1,1 @@
+alter table medication_schedule add column quantity decimal not null default 1;

@@ -1,0 +1,12 @@
+<h2 class="mat-title">Notifications</h2>
+<mediminder-notification-card
+  *ngFor="let notification of notifications"
+  [notification]="notification"
+  (onDismiss)="dismiss($event)">
+</mediminder-notification-card>
+<mediminder-empty-state
+  [source]="notifications"
+  title="Job well done!"
+  text="You have no new notifications"
+  icon="checklist">
+</mediminder-empty-state>

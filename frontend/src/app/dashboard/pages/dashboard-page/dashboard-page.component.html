@@ -1,0 +1,20 @@
+<h1 class="mat-headline">
+  <span *ngIf="user?.name == null">
+    Welcome!
+  </span>
+  <span *ngIf="user?.name != null">
+    Welcome {{user!.name}}!
+  </span>
+</h1>
+<section>
+  <mediminder-event-list
+    [events]="events"
+    (onComplete)="completeEvent($event)">
+  </mediminder-event-list>
+</section>
+<section>
+  <mediminder-notification-list
+    [notifications]="notifications"
+    (onDismiss)="dismissNotification($event)">
+  </mediminder-notification-list>
+</section>

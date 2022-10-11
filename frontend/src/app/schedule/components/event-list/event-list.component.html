@@ -1,0 +1,18 @@
+<h2 class="mat-title">Medication intake</h2>
+<ng-container
+  *ngFor="let group of eventsByTime | keyvalue">
+  <h2 class="mat-title">{{group.key}}</h2>
+  <section>
+    <mediminder-event-card
+      *ngFor="let event of group.value"
+      [event]="event"
+      (onComplete)="complete($event)">
+    </mediminder-event-card>
+  </section>
+</ng-container>
+<mediminder-empty-state
+  [source]="events"
+  icon="sentiment_satisfied"
+  title="All done"
+  text="You have no medication to take today">
+</mediminder-empty-state>
