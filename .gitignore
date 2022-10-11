@@ -16,7 +16,7 @@ bazel-out/
 node_modules/
 npm-debug.log
 yarn-error.log
-.angular/cache
+.angular/cache/
 .sass-cache/
 connect.lock
 coverage
