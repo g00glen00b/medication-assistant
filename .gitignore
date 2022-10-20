@@ -15,9 +15,9 @@ out-tsc/
 bazel-out/
 node_modules/
 node/
+.angular/
 npm-debug.log
 yarn-error.log
-.angular/cache/
 .sass-cache/
 connect.lock
 coverage
@@ -56,5 +56,5 @@ nbdist/
 Thumbs.db
 
 ### Project ###
-/db-data/
+db-data/
 http-client.private.env.json
