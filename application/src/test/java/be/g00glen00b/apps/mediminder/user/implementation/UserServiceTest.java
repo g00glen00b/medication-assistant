@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Clock;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+    private static final ZonedDateTime TODAY = ZonedDateTime.of(2022, 10, 7, 10, 0, 0, 0, ZoneId.of("UTC"));
     private UserService service;
     @Mock
     private UserEntityRepository repository;
@@ -35,7 +38,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new UserService(repository, passwordEncoder);
+        Clock fixedClock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
+        service = new UserService(repository, passwordEncoder, fixedClock);
     }
 
     @Test

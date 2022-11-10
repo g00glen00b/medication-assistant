@@ -46,8 +46,7 @@ class MedicationScheduleServiceTest {
 
     @BeforeEach
     void setUp() {
-        Clock fixedClock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
-        service = new MedicationScheduleService(repository, medicationFacade, userFacade, fixedClock);
+        service = new MedicationScheduleService(repository, medicationFacade, userFacade);
     }
 
     @Test

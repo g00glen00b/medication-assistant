@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -49,8 +48,7 @@ class MedicationAvailabilityServiceTest {
 
     @BeforeEach
     void setUp() {
-        Clock clock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
-        service = new MedicationAvailabilityService(repository, medicationFacade, userFacade, clock);
+        service = new MedicationAvailabilityService(repository, medicationFacade, userFacade);
     }
 
     @Test
