@@ -43,4 +43,13 @@ interface MedicationAvailabilityEntityRepository extends JpaRepository<Medicatio
         having sum(a.quantity) / sum(a.initialQuantity) <= ?1
     """)
     Page<LowMedicationAvailabilityInfo> findAllMedicationIdsWithQuantityPercentageLessThan(BigDecimal percentage, LocalDate expiresAfterDate, Pageable pageable);
+
+    @Query("""
+        select a.medicationId as medicationId, sum(a.quantity) as totalQuantity
+        from MedicationAvailabilityEntity a
+        group by a.medicationId
+        where a.userId = ?1
+    """)
+    
+
 }
