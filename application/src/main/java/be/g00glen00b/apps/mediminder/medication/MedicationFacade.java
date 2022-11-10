@@ -3,7 +3,7 @@ package be.g00glen00b.apps.mediminder.medication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.UUID;
 
 public interface MedicationFacade {

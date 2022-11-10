@@ -3,7 +3,7 @@ package be.g00glen00b.apps.mediminder.schedule.implementation;
 import be.g00glen00b.apps.mediminder.schedule.InvalidMedicationScheduleException;
 import lombok.*;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable

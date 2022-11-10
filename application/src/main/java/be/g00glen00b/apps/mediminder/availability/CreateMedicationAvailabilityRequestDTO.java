@@ -1,6 +1,6 @@
 package be.g00glen00b.apps.mediminder.availability;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;

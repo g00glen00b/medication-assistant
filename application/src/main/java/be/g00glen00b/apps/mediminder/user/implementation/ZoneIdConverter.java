@@ -1,6 +1,6 @@
 package be.g00glen00b.apps.mediminder.user.implementation;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 import java.time.ZoneId;
 
 public class ZoneIdConverter implements AttributeConverter<ZoneId, String> {

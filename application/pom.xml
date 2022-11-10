@@ -86,15 +86,6 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.moduliths</groupId>
-            <artifactId>moduliths-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.moduliths</groupId>
-            <artifactId>moduliths-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>be.g00glen00b.mediminder</groupId>
             <artifactId>mediminder-frontend</artifactId>
         </dependency>
@@ -109,6 +100,19 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-modulith-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
