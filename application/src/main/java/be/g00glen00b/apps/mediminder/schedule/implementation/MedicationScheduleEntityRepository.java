@@ -15,8 +15,8 @@ interface MedicationScheduleEntityRepository extends JpaRepository<MedicationSch
     Optional<MedicationScheduleEntity> findByIdAndUserId(UUID id, UUID userId);
     @Query("""
         select s from MedicationScheduleEntity s
-        where s.userId = ?1 
-        and s.period.startingAt <= ?2 
+        where s.userId = ?1
+        and s.period.startingAt <= ?2
         and (s.period.endingAtInclusive is null or s.period.endingAtInclusive >= ?2)
     """)
     Page<MedicationScheduleEntity> findAllByUserIdAndDate(UUID userId, LocalDate date, Pageable pageable);
@@ -27,4 +27,5 @@ interface MedicationScheduleEntityRepository extends JpaRepository<MedicationSch
         and e.eventDate = ?2
     """)
     Optional<MedicationScheduleCompletedEventEntity> findCompletedEventByIdAndEventDate(UUID id, LocalDateTime eventDate);
+    long countAllByUserId(UUID userId);
 }

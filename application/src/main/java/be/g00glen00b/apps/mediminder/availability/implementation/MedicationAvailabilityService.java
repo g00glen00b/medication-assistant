@@ -5,7 +5,6 @@ import be.g00glen00b.apps.mediminder.medication.CreateMedicationRequestDTO;
 import be.g00glen00b.apps.mediminder.medication.MedicationDTO;
 import be.g00glen00b.apps.mediminder.medication.MedicationFacade;
 import be.g00glen00b.apps.mediminder.user.UserFacade;
-import be.g00glen00b.apps.mediminder.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +16,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.UUID;
 import java.util.function.BinaryOperator;
 
@@ -31,12 +27,10 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     private final MedicationAvailabilityEntityRepository repository;
     private final MedicationFacade medicationFacade;
     private final UserFacade userFacade;
-    private final Clock clock;
 
     @Override
     public Page<MedicationAvailabilityDTO> findAllNonEmptyNonExpiredByUserId(UUID userId, Pageable pageable) {
-        ZoneId userTimezone = calculateUserTimezone(userId);
-        LocalDate today = calculateTodayAtUserTimezone(userTimezone);
+        LocalDate today = userFacade.calculateTodayForUser(userId).toLocalDate();
         return repository
             .findAllNonEmptyNonExpiredByUserId(userId, today, pageable)
             .map(this::mapToDTO);
@@ -84,8 +78,7 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     @Override
     @Transactional
     public BigDecimal removeQuantity(UUID userId, UUID medicationId, BigDecimal quantity) {
-        ZoneId userTimezone = calculateUserTimezone(userId);
-        LocalDate today = calculateTodayAtUserTimezone(userTimezone);
+        LocalDate today = userFacade.calculateTodayForUser(userId).toLocalDate();
         PageRequest resultsByExpiryDate = PageRequest.of(0, 100, Sort.by("expiryDate"));
         return repository
             .findAllNonEmptyNonExpiredByUserIdAndMedicationId(userId, medicationId, today, resultsByExpiryDate)
@@ -119,22 +112,6 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     private MedicationAvailabilityDTO mapToDTO(MedicationAvailabilityEntity entity) {
         MedicationDTO medication = medicationFacade.findByIdOrDummy(entity.getMedicationId());
         return MedicationAvailabilityDTO.ofEntity(entity, medication);
-    }
-
-    private LocalDate calculateTodayAtUserTimezone(ZoneId userTimezone) {
-        return Instant
-            .now(clock)
-            .atZone(userTimezone)
-            .toLocalDateTime()
-            .toLocalDate();
-    }
-
-    private ZoneId calculateUserTimezone(UUID userId) {
-        try {
-            return userFacade.findById(userId).timezone();
-        } catch (UserNotFoundException ex) {
-            return ZoneId.of("UTC");
-        }
     }
 
     private static <T> BinaryOperator<T> unsupportedOperator() {

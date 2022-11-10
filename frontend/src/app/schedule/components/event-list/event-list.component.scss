@@ -4,3 +4,9 @@ section {
   grid-template-columns: repeat(2, 1fr);
   margin-bottom: 1em;
 }
+
+@media screen and (max-width: 800px) {
+  section {
+   grid-template-columns: 1fr;
+  }
+}

@@ -3,6 +3,7 @@ package be.g00glen00b.apps.mediminder.user;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface UserFacade {
     boolean existsByEmail(String email);
 
     Collection<String> findAvailableTimezones();
+
+    LocalDateTime calculateTodayForUser(UUID id);
 }

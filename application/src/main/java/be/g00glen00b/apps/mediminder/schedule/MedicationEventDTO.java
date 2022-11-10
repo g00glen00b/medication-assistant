@@ -26,4 +26,8 @@ public record MedicationEventDTO(
         LocalDateTime eventDateTime = LocalDateTime.of(eventDate, entity.getTime());
         return new MedicationEventDTO(entity.getId(), medication, entity.getQuantity(), eventDateTime, entity.getDescription(), eventEntity.getCompletedDate());
     }
+
+    public boolean isCompleted() {
+        return completedDate != null;
+    }
 }

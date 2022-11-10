@@ -4,7 +4,6 @@ import be.g00glen00b.apps.mediminder.medication.MedicationDTO;
 import be.g00glen00b.apps.mediminder.medication.MedicationFacade;
 import be.g00glen00b.apps.mediminder.schedule.*;
 import be.g00glen00b.apps.mediminder.user.UserFacade;
-import be.g00glen00b.apps.mediminder.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -22,11 +22,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 class MedicationScheduleService implements MedicationScheduleFacade {
-    public static final PageRequest FIRST_HUNDRED_RECORDS = PageRequest.of(0, 100);
+    public static final long MAXIMUM_SCHEDULES_PER_USER = 100;
+    public static final PageRequest ALL_SCHEDULES = PageRequest.of(0, 100);
     private final MedicationScheduleEntityRepository repository;
     private final MedicationFacade medicationFacade;
     private final UserFacade userFacade;
-    private final Clock clock;
 
     @Override
     public Page<MedicationScheduleDTO> findAll(UUID userId, Pageable pageable) {
@@ -48,6 +48,7 @@ class MedicationScheduleService implements MedicationScheduleFacade {
     public MedicationScheduleDTO create(UUID userId, @Valid CreateMedicationScheduleRequestDTO request) {
         validateMedicationId(request.medicationId());
         validateUserId(userId);
+        validateScheduleCount(userId);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofEndInclusive(request.startingAt(), request.endingAtInclusive());
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(request.medicationId(), userId, request.quantity(), period, request.interval(), request.time(), request.description());
         MedicationScheduleEntity savedEntity = repository.save(entity);
@@ -77,7 +78,7 @@ class MedicationScheduleService implements MedicationScheduleFacade {
     @Override
     public Collection<MedicationEventDTO> findEventsByDate(UUID userId, LocalDate date) {
         return repository
-            .findAllByUserIdAndDate(userId, date, FIRST_HUNDRED_RECORDS)
+            .findAllByUserIdAndDate(userId, date, ALL_SCHEDULES)
             .stream()
             .filter(schedule -> schedule.isActiveOnDate(date))
             .map(entity -> mapToEventDTO(entity, date))
@@ -90,8 +91,7 @@ class MedicationScheduleService implements MedicationScheduleFacade {
         MedicationScheduleEntity entity = findByIdOrThrowIfNotFound(userId, id);
         validateEventOccuringOnDate(entity, eventDate);
         validateNoEventCompletedOnDate(entity, eventDate);
-        ZoneId timezone = calculateUserTimezone(userId);
-        LocalDateTime today = calculateTodayAtUserTimezone(timezone);
+        LocalDateTime today = userFacade.calculateTodayForUser(userId);
         MedicationScheduleCompletedEventEntity eventEntity = entity.addCompletedEvent(eventDate, today);
         repository.save(entity);
         MedicationDTO medication = medicationFacade.findByIdOrDummy(entity.getMedicationId());
@@ -141,18 +141,9 @@ class MedicationScheduleService implements MedicationScheduleFacade {
         }
     }
 
-    private LocalDateTime calculateTodayAtUserTimezone(ZoneId userTimezone) {
-        return Instant
-            .now(clock)
-            .atZone(userTimezone)
-            .toLocalDateTime();
-    }
-
-    private ZoneId calculateUserTimezone(UUID userId) {
-        try {
-            return userFacade.findById(userId).timezone();
-        } catch (UserNotFoundException ex) {
-            return ZoneId.of("UTC");
+    private void validateScheduleCount(UUID userId) {
+        if (repository.countAllByUserId(userId) > MAXIMUM_SCHEDULES_PER_USER) {
+            throw new InvalidMedicationScheduleException("We only allow 100 schedules per user. Please delete an existing schedule before adding a new one.");
         }
     }
 }

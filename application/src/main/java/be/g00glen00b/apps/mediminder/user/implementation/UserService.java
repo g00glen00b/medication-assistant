@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.UUID;
@@ -19,8 +22,10 @@ import java.util.UUID;
 @Validated
 @RequiredArgsConstructor
 class UserService implements UserFacade, UserDetailsService {
+    public static final ZoneId DEFAULT_TIMEZONE = ZoneId.of("UTC");
     private final UserEntityRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final Clock clock;
 
     @Override
     @Transactional
@@ -83,6 +88,19 @@ class UserService implements UserFacade, UserDetailsService {
             .stream()
             .sorted()
             .toList();
+    }
+
+    @Override
+    public LocalDateTime calculateTodayForUser(UUID id) {
+        ZoneId timezone = findUserTimezoneOrDummy(id);
+        return Instant.now(clock).atZone(timezone).toLocalDateTime();
+    }
+
+    private ZoneId findUserTimezoneOrDummy(UUID id) {
+        return repository
+            .findById(id)
+            .map(UserEntity::getTimezone)
+            .orElse(DEFAULT_TIMEZONE);
     }
 
     private void validateUniqueEmailAddress(String email) {
