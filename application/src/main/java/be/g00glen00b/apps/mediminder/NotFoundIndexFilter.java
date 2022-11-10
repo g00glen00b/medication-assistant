@@ -23,16 +23,20 @@ public class NotFoundIndexFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (isHtmlRequest(request) && !isAPI(request) && !isActuator(request) && !isOpenAPI(request)) {
-            HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {
-                @Override
-                public String getRequestURI() {
-                    return contextPath + "/index.html";
-                }
-            };
-            filterChain.doFilter(wrapper, response);
+            HttpServletRequest mutatedRequest = mutateRequestToIndexPage(request);
+            filterChain.doFilter(mutatedRequest, response);
         } else {
             filterChain.doFilter(request, response);
         }
+    }
+
+    private HttpServletRequestWrapper mutateRequestToIndexPage(HttpServletRequest request) {
+        return new HttpServletRequestWrapper(request) {
+            @Override
+            public String getRequestURI() {
+                return contextPath + "/index.html";
+            }
+        };
     }
 
     private boolean isHtmlRequest(HttpServletRequest request) {
