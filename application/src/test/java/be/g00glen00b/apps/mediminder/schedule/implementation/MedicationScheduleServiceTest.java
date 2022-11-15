@@ -6,7 +6,6 @@ import be.g00glen00b.apps.mediminder.medication.MedicationQuantityTypeDTO;
 import be.g00glen00b.apps.mediminder.schedule.*;
 import be.g00glen00b.apps.mediminder.user.UserFacade;
 import be.g00glen00b.apps.mediminder.user.UserInfoDTO;
-import be.g00glen00b.apps.mediminder.user.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +32,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MedicationScheduleServiceTest {
-    private static final ZonedDateTime TODAY = ZonedDateTime.of(2022, 10, 7, 10, 0, 0, 0, ZoneId.of("UTC"));
     private MedicationScheduleService service;
     @Mock
     private MedicationScheduleEntityRepository repository;
@@ -46,8 +44,7 @@ class MedicationScheduleServiceTest {
 
     @BeforeEach
     void setUp() {
-        Clock fixedClock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
-        service = new MedicationScheduleService(repository, medicationFacade, userFacade, fixedClock);
+        service = new MedicationScheduleService(repository, medicationFacade, userFacade);
     }
 
     @Test
@@ -55,7 +52,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -75,7 +72,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -94,7 +91,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -113,7 +110,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -131,7 +128,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -149,7 +146,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(TODAY.toLocalDate());
+        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(LocalDate.now());
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "Before breakfast");
@@ -167,7 +164,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
@@ -198,7 +195,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
@@ -231,7 +228,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         CreateMedicationScheduleRequestDTO request = new CreateMedicationScheduleRequestDTO(medicationId, quantity, startingAt, null, interval, time, "Before breakfast");
@@ -249,7 +246,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         CreateMedicationScheduleRequestDTO request = new CreateMedicationScheduleRequestDTO(medicationId, quantity, startingAt, null, interval, time, "Before breakfast");
@@ -268,7 +265,7 @@ class MedicationScheduleServiceTest {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
@@ -289,8 +286,8 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         BigDecimal oldQuantity = new BigDecimal("2");
         BigDecimal newQuantity = new BigDecimal("1");
-        LocalDate newStartingAt = TODAY.toLocalDate();
-        LocalDate oldStartingAt = TODAY.toLocalDate().plusDays(1);
+        LocalDate newStartingAt = LocalDate.now();
+        LocalDate oldStartingAt = LocalDate.now().plusDays(1);
         Period oldInterval = Period.ofDays(2);
         Period newInterval = Period.ofDays(1);
         LocalTime oldTime = LocalTime.of(7, 0);
@@ -322,8 +319,8 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         BigDecimal oldQuantity = new BigDecimal("2");
         BigDecimal newQuantity = new BigDecimal("1");
-        LocalDate newStartingAt = TODAY.toLocalDate();
-        LocalDate oldStartingAt = TODAY.toLocalDate().plusDays(1);
+        LocalDate newStartingAt = LocalDate.now();
+        LocalDate oldStartingAt = LocalDate.now().plusDays(1);
         Period oldInterval = Period.ofDays(2);
         Period newInterval = Period.ofDays(1);
         LocalTime oldTime = LocalTime.of(7, 0);
@@ -360,8 +357,8 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         BigDecimal oldQuantity = new BigDecimal("2");
         BigDecimal newQuantity = new BigDecimal("1");
-        LocalDate newStartingAt = TODAY.toLocalDate();
-        LocalDate oldStartingAt = TODAY.toLocalDate().plusDays(1);
+        LocalDate newStartingAt = LocalDate.now();
+        LocalDate oldStartingAt = LocalDate.now().plusDays(1);
         Period oldInterval = Period.ofDays(2);
         Period newInterval = Period.ofDays(1);
         LocalTime oldTime = LocalTime.of(7, 0);
@@ -384,8 +381,8 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         BigDecimal oldQuantity = new BigDecimal("2");
         BigDecimal newQuantity = new BigDecimal("1");
-        LocalDate newStartingAt = TODAY.toLocalDate();
-        LocalDate oldStartingAt = TODAY.toLocalDate().plusDays(1);
+        LocalDate newStartingAt = LocalDate.now();
+        LocalDate oldStartingAt = LocalDate.now().plusDays(1);
         Period oldInterval = Period.ofDays(2);
         Period newInterval = Period.ofDays(1);
         LocalTime oldTime = LocalTime.of(7, 0);
@@ -407,7 +404,7 @@ class MedicationScheduleServiceTest {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         BigDecimal newQuantity = new BigDecimal("1");
-        LocalDate newStartingAt = TODAY.toLocalDate();
+        LocalDate newStartingAt = LocalDate.now();
         Period newInterval = Period.ofDays(1);
         LocalTime newTime = LocalTime.of(8, 0);
         UpdateMedicationScheduleRequestDTO request = new UpdateMedicationScheduleRequestDTO(newQuantity, newStartingAt, null, newInterval, newTime, "After breakfast");
@@ -422,7 +419,7 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
@@ -448,7 +445,7 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
@@ -456,7 +453,7 @@ class MedicationScheduleServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 100);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = startingAt.plusDays(1);
         LocalDateTime completedDateTime = LocalDateTime.of(eventDate, LocalTime.of(8, 1));
         MedicationScheduleCompletedEventEntity eventEntity = entity.addCompletedEvent(eventDate, completedDateTime);
         when(repository.findAllByUserIdAndDate(any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity), pageRequest, 1));
@@ -479,7 +476,7 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
@@ -487,7 +484,7 @@ class MedicationScheduleServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 100);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = startingAt.plusDays(1);
         when(repository.findAllByUserIdAndDate(any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity), pageRequest, 1));
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
 
@@ -507,7 +504,7 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
@@ -515,7 +512,7 @@ class MedicationScheduleServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 100);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = startingAt.plusDays(1);
         LocalDateTime completedDateTime = LocalDateTime.of(eventDate, LocalTime.of(8, 1));
         MedicationScheduleCompletedEventEntity eventEntity = entity.addCompletedEvent(eventDate, completedDateTime);
         when(repository.findAllByUserIdAndDate(any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity), pageRequest, 1));
@@ -532,7 +529,7 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
@@ -540,7 +537,7 @@ class MedicationScheduleServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 100);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = startingAt.plusDays(1);
         LocalDateTime completedDateTime = LocalDateTime.of(eventDate, LocalTime.of(8, 1));
         MedicationScheduleCompletedEventEntity eventEntity = entity.addCompletedEvent(eventDate, completedDateTime);
         when(repository.findAllByUserIdAndDate(any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity), pageRequest, 1));
@@ -556,13 +553,13 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         PageRequest pageRequest = PageRequest.of(0, 100);
-        LocalDate eventDate = TODAY.toLocalDate().minusDays(1);
+        LocalDate eventDate = startingAt.minusDays(1);
         when(repository.findAllByUserIdAndDate(any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity), pageRequest, 1));
 
         Collection<MedicationEventDTO> results = service.findEventsByDate(userId, eventDate);
@@ -577,16 +574,16 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        UserInfoDTO userInfo = new UserInfoDTO(userId, "me@example.org", "", ZoneId.of("Europe/Brussels"));
-        when(userFacade.findById(any())).thenReturn(userInfo);
+        LocalDate eventDate = startingAt.plusDays(1);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
@@ -597,35 +594,7 @@ class MedicationScheduleServiceTest {
             quantity,
             LocalDateTime.of(eventDate, time),
             entity.getDescription(),
-            LocalDateTime.of(2022, 10, 7, 12, 0, 0)
-        ));
-    }
-
-    @Test
-    void completeEvent_usesDefaultTimezoneIfNotFound() {
-        UUID userId = UUID.randomUUID();
-        UUID medicationId = UUID.randomUUID();
-        BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
-        Period interval = Period.ofDays(1);
-        LocalTime time = LocalTime.of(8, 0);
-        MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
-        MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
-        MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
-        MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        when(userFacade.findById(any())).thenThrow(new UserNotFoundException(userId));
-        when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
-        when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
-
-        MedicationEventDTO result = service.completeEvent(userId, entity.getId(), eventDate);
-        assertThat(result).isEqualTo(new MedicationEventDTO(
-            entity.getId(),
-            medicationDTO,
-            quantity,
-            LocalDateTime.of(eventDate, time),
-            entity.getDescription(),
-            LocalDateTime.of(2022, 10, 7, 10, 0, 0)
+            today
         ));
     }
 
@@ -634,16 +603,16 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        UserInfoDTO userInfo = new UserInfoDTO(userId, "me@example.org", "", ZoneId.of("Europe/Brussels"));
-        when(userFacade.findById(any())).thenReturn(userInfo);
+        LocalDate eventDate = startingAt.plusDays(1);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
@@ -655,7 +624,7 @@ class MedicationScheduleServiceTest {
             .isEqualTo(MedicationScheduleCompletedEventEntity.of(
                 entity,
                 eventDate,
-                LocalDateTime.of(2022, 10, 7, 12, 0, 0)
+                today
             ));
     }
 
@@ -664,16 +633,16 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = LocalDate.now();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        UserInfoDTO userInfo = new UserInfoDTO(userId, "me@example.org", "", ZoneId.of("Europe/Brussels"));
-        when(userFacade.findById(any())).thenReturn(userInfo);
+        LocalDate eventDate = startingAt.plusDays(1);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
@@ -688,16 +657,16 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        UserInfoDTO userInfo = new UserInfoDTO(userId, "me@example.org", "", ZoneId.of("Europe/Brussels"));
-        when(userFacade.findById(any())).thenReturn(userInfo);
+        LocalDate eventDate = startingAt.plusDays(1);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
@@ -710,28 +679,28 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
-        UserInfoDTO userInfo = new UserInfoDTO(userId, "me@example.org", "", ZoneId.of("Europe/Brussels"));
-        when(userFacade.findById(any())).thenReturn(userInfo);
+        LocalDate eventDate = startingAt.plusDays(1);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
         service.completeEvent(userId, entity.getId(), eventDate);
-        verify(userFacade).findById(userId);
+        verify(userFacade).calculateTodayForUser(userId);
     }
 
     @Test
     void completeEvent_throwsExceptionIfEntityNotFound() {
         UUID userId = UUID.randomUUID();
         UUID id = UUID.randomUUID();
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = LocalDate.now();
 
         assertThatExceptionOfType(MedicationScheduleNotFoundException.class)
             .isThrownBy(() -> service.completeEvent(userId, id, eventDate))
@@ -744,17 +713,18 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
-        LocalDate eventDate = TODAY.toLocalDate().minusDays(1);
+        LocalDate eventDate = startingAt.minusDays(1);
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));
 
         assertThatExceptionOfType(MedicationEventNotFoundException.class)
             .isThrownBy(() -> service.completeEvent(userId, entity.getId(), eventDate))
-            .withMessage("This medication should not be taken at 2022-10-06");
+            .withMessage("This medication should not be taken at 2022-10-05");
         verifyNoInteractions(medicationFacade, userFacade);
     }
 
@@ -763,12 +733,13 @@ class MedicationScheduleServiceTest {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
         BigDecimal quantity = new BigDecimal("1");
-        LocalDate startingAt = TODAY.toLocalDate();
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate startingAt = today.toLocalDate();
         Period interval = Period.ofDays(1);
         LocalTime time = LocalTime.of(8, 0);
         MedicationSchedulePeriod period = MedicationSchedulePeriod.ofUnboundedEnd(startingAt);
         MedicationScheduleEntity entity = MedicationScheduleEntity.of(medicationId, userId, quantity, period, interval, time, "After breakfast");
-        LocalDate eventDate = TODAY.toLocalDate().plusDays(1);
+        LocalDate eventDate = startingAt.plusDays(1);
         MedicationScheduleCompletedEventEntity eventEntity = entity.addCompletedEvent(eventDate, LocalDateTime.of(2022, 10, 7, 12, 0, 0));
         when(repository.findCompletedEventByIdAndEventDate(any(), any())).thenReturn(Optional.of(eventEntity));
         when(repository.findByIdAndUserId(any(), any())).thenReturn(Optional.of(entity));

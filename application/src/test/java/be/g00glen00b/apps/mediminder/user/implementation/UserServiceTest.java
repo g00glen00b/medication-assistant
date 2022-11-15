@@ -4,6 +4,8 @@ import be.g00glen00b.apps.mediminder.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -13,7 +15,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +30,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+    private static final ZonedDateTime TODAY = ZonedDateTime.of(2022, 10, 7, 14, 0, 0, 0, ZoneId.of("UTC"));
     private UserService service;
     @Mock
     private UserEntityRepository repository;
@@ -35,7 +41,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new UserService(repository, passwordEncoder);
+        Clock fixedClock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
+        service = new UserService(repository, passwordEncoder, fixedClock);
     }
 
     @Test
@@ -249,6 +256,38 @@ class UserServiceTest {
     void findAvailableTimezones_returnsAllAvailableZoneIds() {
         assertThat(service.findAvailableTimezones()).containsAll(ZoneId.getAvailableZoneIds());
     }
+
+    @ParameterizedTest
+    @CsvSource({
+        "Europe/Brussels,2022-10-07T16:00:00",
+        "Australia/Brisbane,2022-10-08T00:00:00"
+    })
+    void calculateTodayForUser_returnsResult(String zoneId, String expectedToday) {
+        UserEntity entity = UserEntity.of("me@example.org", "Anakletos Fiachna", "password", ZoneId.of(zoneId));
+        when(repository.findById(any())).thenReturn(Optional.of(entity));
+        LocalDateTime result = service.calculateTodayForUser(entity.getId());
+        // TODAY = 2022-10-07 14:00:00 at UTC time
+        assertThat(result).isEqualTo(expectedToday);
+        verify(repository).findById(entity.getId());
+    }
+
+    @Test
+    void calculateTodayForUser_returnsUTCResultIfTimezoneNotGiven() {
+        UserEntity entity = UserEntity.of("me@example.org", "Anakletos Fiachna", "password", null);
+        when(repository.findById(any())).thenReturn(Optional.of(entity));
+        LocalDateTime result = service.calculateTodayForUser(entity.getId());
+        // TODAY = 2022-10-07 14:00:00 at UTC time
+        assertThat(result).isEqualTo("2022-10-07T14:00:00");
+    }
+
+    @Test
+    void calculateTodayForUser_returnsUTCResultIfUserNotFOund() {
+        UUID userId = UUID.randomUUID();
+        LocalDateTime result = service.calculateTodayForUser(userId);
+        // TODAY = 2022-10-07 14:00:00 at UTC time
+        assertThat(result).isEqualTo("2022-10-07T14:00:00");
+    }
+
 
     private Answer<String> prefixFirstArgument(String prefix) {
         return invocation -> prefix + invocation.getArgument(0, String.class);

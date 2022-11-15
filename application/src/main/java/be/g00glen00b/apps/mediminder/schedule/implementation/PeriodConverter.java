@@ -1,6 +1,6 @@
 package be.g00glen00b.apps.mediminder.schedule.implementation;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 import java.time.Period;
 
 public class PeriodConverter implements AttributeConverter<Period, String> {

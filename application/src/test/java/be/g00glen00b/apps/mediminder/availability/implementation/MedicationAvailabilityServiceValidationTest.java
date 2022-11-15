@@ -5,8 +5,8 @@ import be.g00glen00b.apps.mediminder.availability.UpdateMedicationAvailabilityRe
 import be.g00glen00b.apps.mediminder.medication.MedicationFacade;
 import be.g00glen00b.apps.mediminder.notification.NotificationFacade;
 import be.g00glen00b.apps.mediminder.user.UserFacade;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
-import org.moduliths.test.ModuleTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -15,9 +15,9 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.modulith.test.ApplicationModuleTest;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@ModuleTest
+@ApplicationModuleTest
 @EnableAutoConfiguration(exclude = {
     DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,

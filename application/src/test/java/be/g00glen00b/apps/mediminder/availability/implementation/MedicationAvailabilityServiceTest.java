@@ -6,8 +6,6 @@ import be.g00glen00b.apps.mediminder.medication.MedicationDTO;
 import be.g00glen00b.apps.mediminder.medication.MedicationFacade;
 import be.g00glen00b.apps.mediminder.medication.MedicationQuantityTypeDTO;
 import be.g00glen00b.apps.mediminder.user.UserFacade;
-import be.g00glen00b.apps.mediminder.user.UserInfoDTO;
-import be.g00glen00b.apps.mediminder.user.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,7 +30,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MedicationAvailabilityServiceTest {
-    private static final ZonedDateTime TODAY = ZonedDateTime.of(2022, 10, 6, 18, 0, 0, 0, ZoneId.of("UTC"));
     private MedicationAvailabilityService service;
     @Mock
     private MedicationAvailabilityEntityRepository repository;
@@ -49,23 +44,22 @@ class MedicationAvailabilityServiceTest {
 
     @BeforeEach
     void setUp() {
-        Clock clock = Clock.fixed(TODAY.toInstant(), TODAY.getZone());
-        service = new MedicationAvailabilityService(repository, medicationFacade, userFacade, clock);
+        service = new MedicationAvailabilityService(repository, medicationFacade, userFacade);
     }
 
     @Test
     void findAllNonEmptyNonExpiredByUserId_returnsResult() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Anakletos Fiachna", ZoneId.of("Europe/Brussels"));
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), today.plusDays(2).toLocalDate());
         Pageable pageRequest = PageRequest.of(0, 10);
         Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenReturn(user);
         when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
 
         Page<MedicationAvailabilityDTO> result = service.findAllNonEmptyNonExpiredByUserId(userId, pageRequest);
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -84,31 +78,31 @@ class MedicationAvailabilityServiceTest {
     void findAllNonEmptyNonExpiredByUserId_usesRepository() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Anakletos Fiachna", ZoneId.of("Europe/Brussels"));
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), today.plusDays(2).toLocalDate());
         Pageable pageRequest = PageRequest.of(0, 10);
         Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenReturn(user);
         when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
 
         service.findAllNonEmptyNonExpiredByUserId(userId, pageRequest);
-        verify(repository).findAllNonEmptyNonExpiredByUserId(userId, TODAY.toLocalDate(), pageRequest);
+        verify(repository).findAllNonEmptyNonExpiredByUserId(userId, today.toLocalDate(), pageRequest);
     }
 
     @Test
     void findAllNonEmptyNonExpiredByUserId_retrievesMedicationInfo() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Anakletos Fiachna", ZoneId.of("Europe/Brussels"));
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), today.plusDays(2).toLocalDate());
         Pageable pageRequest = PageRequest.of(0, 10);
         Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
 
@@ -120,54 +114,18 @@ class MedicationAvailabilityServiceTest {
     void findAllNonEmptyNonExpiredByUserId_retrievesUserInfoForTimezone() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Anakletos Fiachna", ZoneId.of("Europe/Brussels"));
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), today.plusDays(2).toLocalDate());
         Pageable pageRequest = PageRequest.of(0, 10);
         Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
         when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
 
         service.findAllNonEmptyNonExpiredByUserId(userId, pageRequest);
-        verify(userFacade).findById(userId);
-    }
-
-    @Test
-    void findAllNonEmptyNonExpiredByUserId_mapsToLocalDateUser() {
-        UUID userId = UUID.randomUUID();
-        UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Anakletos Fiachna", ZoneId.of("Australia/Brisbane"));
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
-        Pageable pageRequest = PageRequest.of(0, 10);
-        Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
-        MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
-        MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenReturn(user);
-        when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
-        when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
-
-        service.findAllNonEmptyNonExpiredByUserId(userId, pageRequest);
-        // Australia/Brisbane is 10 hours behind UTC time, which turns it into the next date if 18:00:00 UTC time
-        verify(repository).findAllNonEmptyNonExpiredByUserId(userId, TODAY.toLocalDate().plusDays(1), pageRequest);
-    }
-
-    @Test
-    void findAllNonEmptyNonExpiredByUserId_usesUTCAsDefaultTimezoneIfUserNotFound() {
-        UUID userId = UUID.randomUUID();
-        UUID medicationId = UUID.randomUUID();
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("2"), TODAY.plusDays(2).toLocalDate());
-        Pageable pageRequest = PageRequest.of(0, 10);
-        Page<MedicationAvailabilityEntity> entityPage = new PageImpl<>(List.of(entity), pageRequest, 1);
-        MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(UUID.randomUUID(), "ml");
-        MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
-        when(userFacade.findById(userId)).thenThrow(new UserNotFoundException(userId));
-        when(repository.findAllNonEmptyNonExpiredByUserId(any(), any(), any())).thenReturn(entityPage);
-        when(medicationFacade.findByIdOrDummy(any())).thenReturn(medicationDTO);
-
-        service.findAllNonEmptyNonExpiredByUserId(userId, pageRequest);
-        verify(repository).findAllNonEmptyNonExpiredByUserId(userId, TODAY.toLocalDate(), pageRequest);
+        verify(userFacade).calculateTodayForUser(userId);
     }
 
     @Test
@@ -175,7 +133,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiresTomorrow = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiresTomorrow = LocalDate.now().plusDays(1);
         CreateMedicationAvailabilityRequestDTO request = new CreateMedicationAvailabilityRequestDTO("Hydrocortisone", quantityTypeId, new BigDecimal("1"), new BigDecimal("10"), expiresTomorrow);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -201,7 +159,7 @@ class MedicationAvailabilityServiceTest {
     void create_validatesExistingUser() {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        LocalDate expiresTomorrow = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiresTomorrow = LocalDate.now().plusDays(1);
         CreateMedicationAvailabilityRequestDTO request = new CreateMedicationAvailabilityRequestDTO("Hydrocortisone", quantityTypeId, new BigDecimal("1"), new BigDecimal("10"), expiresTomorrow);
         when(userFacade.existsById(any())).thenReturn(false);
 
@@ -216,7 +174,7 @@ class MedicationAvailabilityServiceTest {
     void create_validatesQuantity() {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        LocalDate expiresTomorrow = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiresTomorrow = LocalDate.now().plusDays(1);
         CreateMedicationAvailabilityRequestDTO request = new CreateMedicationAvailabilityRequestDTO("Hydrocortisone", quantityTypeId, new BigDecimal("11"), new BigDecimal("10"), expiresTomorrow);
         when(userFacade.existsById(any())).thenReturn(true);
 
@@ -231,7 +189,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiresTomorrow = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiresTomorrow = LocalDate.now().plusDays(1);
         CreateMedicationAvailabilityRequestDTO request = new CreateMedicationAvailabilityRequestDTO("Hydrocortisone", quantityTypeId, new BigDecimal("1"), new BigDecimal("10"), expiresTomorrow);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -252,7 +210,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiresTomorrow = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiresTomorrow = LocalDate.now().plusDays(1);
         CreateMedicationAvailabilityRequestDTO request = new CreateMedicationAvailabilityRequestDTO("Hydrocortisone", quantityTypeId, new BigDecimal("1"), new BigDecimal("10"), expiresTomorrow);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -280,8 +238,8 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), new BigDecimal("20"), newExpiryDate);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -306,8 +264,8 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), null, newExpiryDate);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -331,8 +289,8 @@ class MedicationAvailabilityServiceTest {
     void update_validatesUserId() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), new BigDecimal("20"), newExpiryDate);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), oldExpiryDate);
         when(userFacade.existsById(any())).thenReturn(false);
@@ -349,8 +307,8 @@ class MedicationAvailabilityServiceTest {
     void update_validatesQuantity() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("22"), new BigDecimal("20"), newExpiryDate);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), oldExpiryDate);
         when(userFacade.existsById(any())).thenReturn(true);
@@ -366,8 +324,8 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), new BigDecimal("20"), newExpiryDate);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -397,8 +355,8 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), new BigDecimal("20"), newExpiryDate);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
@@ -422,8 +380,8 @@ class MedicationAvailabilityServiceTest {
     void update_validatesIfEntityExists() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate oldExpiryDate = TODAY.plusDays(2).toLocalDate();
-        LocalDate newExpiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate oldExpiryDate = LocalDate.now().plusDays(2);
+        LocalDate newExpiryDate = LocalDate.now().plusDays(1);
         UpdateMedicationAvailabilityRequestDTO request = new UpdateMedicationAvailabilityRequestDTO(new BigDecimal("2"), new BigDecimal("20"), newExpiryDate);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), oldExpiryDate);
         when(userFacade.existsById(any())).thenReturn(true);
@@ -438,7 +396,7 @@ class MedicationAvailabilityServiceTest {
     void delete_deletesEntity() {
         UUID medicationId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        LocalDate expiryDate = TODAY.plusDays(1).toLocalDate();
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         BigDecimal quantity = new BigDecimal("1");
         BigDecimal initialQuantity = new BigDecimal("10");
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, quantity, initialQuantity, expiryDate);
@@ -464,7 +422,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiryDate = TODAY.plusDays(2).toLocalDate();
+        LocalDate expiryDate = LocalDate.now().plusDays(2);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), expiryDate);
@@ -487,7 +445,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiryDate = TODAY.plusDays(2).toLocalDate();
+        LocalDate expiryDate = LocalDate.now().plusDays(2);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), expiryDate);
@@ -514,7 +472,7 @@ class MedicationAvailabilityServiceTest {
         UUID quantityTypeId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        LocalDate expiryDate = TODAY.plusDays(2).toLocalDate();
+        LocalDate expiryDate = LocalDate.now().plusDays(2);
         MedicationQuantityTypeDTO quantityType = new MedicationQuantityTypeDTO(quantityTypeId, "ml");
         MedicationDTO medicationDTO = new MedicationDTO(medicationId, "Hydrocortisone", quantityType);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("1"), new BigDecimal("10"), expiryDate);
@@ -529,10 +487,10 @@ class MedicationAvailabilityServiceTest {
     void removeQuantity_removesQuantityFromAvailabilities() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Europe/Brussels"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity)));
 
         service.removeQuantity(userId, medicationId, new BigDecimal("1"));
@@ -543,10 +501,10 @@ class MedicationAvailabilityServiceTest {
     void removeQuantity_returnsRemainderIfTooMuchToSubtract() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Europe/Brussels"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity)));
 
         BigDecimal result = service.removeQuantity(userId, medicationId, new BigDecimal("4"));
@@ -558,11 +516,11 @@ class MedicationAvailabilityServiceTest {
     void removeQuantity_removesQuantityFromMultipleEntitiesIfPossible() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Europe/Brussels"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         MedicationAvailabilityEntity entityThreeQuantity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
         MedicationAvailabilityEntity entityTwoQuantity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("2"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entityThreeQuantity, entityTwoQuantity)));
 
         BigDecimal result = service.removeQuantity(userId, medicationId, new BigDecimal("4"));
@@ -575,11 +533,11 @@ class MedicationAvailabilityServiceTest {
     void removeQuantity_returnsRemainderOfMultipleSubtractions() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Europe/Brussels"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         MedicationAvailabilityEntity entityThreeQuantity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
         MedicationAvailabilityEntity entityTwoQuantity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("2"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entityThreeQuantity, entityTwoQuantity)));
 
         BigDecimal result = service.removeQuantity(userId, medicationId, new BigDecimal("6"));
@@ -592,27 +550,13 @@ class MedicationAvailabilityServiceTest {
     void removeQuantity_retrievesAllUnexpiredEntitiesWithQuantity() {
         UUID userId = UUID.randomUUID();
         UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Europe/Brussels"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
+        LocalDateTime today = LocalDateTime.of(2022, 10, 6, 10, 0);
+        LocalDate expiryDate = LocalDate.now().plusDays(1);
         MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
+        when(userFacade.calculateTodayForUser(any())).thenReturn(today);
         when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity)));
 
         service.removeQuantity(userId, medicationId, new BigDecimal("4"));
-        verify(repository).findAllNonEmptyNonExpiredByUserIdAndMedicationId(userId, medicationId, TODAY.toLocalDate(), PageRequest.of(0, 100, Sort.by("expiryDate")));
-    }
-
-    @Test
-    void removeQuantity_usesTimezoneOfUserToCheckExpiryDate() {
-        UUID userId = UUID.randomUUID();
-        UUID medicationId = UUID.randomUUID();
-        UserInfoDTO user = new UserInfoDTO(userId, "me@example.org", "Faisal Victoria", ZoneId.of("Australia/Brisbane"));
-        LocalDate expiryDate = TODAY.toLocalDate().plusDays(1);
-        MedicationAvailabilityEntity entity = MedicationAvailabilityEntity.of(medicationId, userId, new BigDecimal("3"), new BigDecimal("10"), expiryDate);
-        when(userFacade.findById(userId)).thenReturn(user);
-        when(repository.findAllNonEmptyNonExpiredByUserIdAndMedicationId(any(), any(), any(), any())).thenReturn(new PageImpl<>(List.of(entity)));
-
-        service.removeQuantity(userId, medicationId, new BigDecimal("4"));
-        verify(repository).findAllNonEmptyNonExpiredByUserIdAndMedicationId(userId, medicationId, TODAY.toLocalDate().plusDays(1), PageRequest.of(0, 100, Sort.by("expiryDate")));
+        verify(repository).findAllNonEmptyNonExpiredByUserIdAndMedicationId(userId, medicationId, today.toLocalDate(), PageRequest.of(0, 100, Sort.by("expiryDate")));
     }
 }

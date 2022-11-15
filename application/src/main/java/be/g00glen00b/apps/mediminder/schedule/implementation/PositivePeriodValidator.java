@@ -2,8 +2,8 @@ package be.g00glen00b.apps.mediminder.schedule.implementation;
 
 import org.springframework.stereotype.Component;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.time.Period;
 
 @Component

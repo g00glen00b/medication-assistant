@@ -2,7 +2,7 @@ package be.g00glen00b.apps.mediminder.schedule;
 
 import be.g00glen00b.apps.mediminder.schedule.implementation.PositivePeriod;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;

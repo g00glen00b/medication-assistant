@@ -1,7 +1,7 @@
 package be.g00glen00b.apps.mediminder.user;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.ZoneId;
 
 public record UpdateUserRequestDTO(
