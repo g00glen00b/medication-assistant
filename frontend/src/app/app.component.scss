@@ -15,3 +15,9 @@ h1 {
   display: flex;
   align-items: center;
 }
+
+mediminder-http-progressbar {
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+}

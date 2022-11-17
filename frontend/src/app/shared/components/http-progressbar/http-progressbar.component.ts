@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpRequestService} from "../../services/http-request.service";
-import {Subject, takeUntil} from "rxjs";
+import {debounceTime, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'mediminder-http-progressbar',
@@ -16,7 +16,9 @@ export class HttpProgressbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.httpRequestService
       .observable()
-      .pipe(takeUntil(this.componentDestroyed))
+      .pipe(
+        takeUntil(this.componentDestroyed),
+        debounceTime(300))
       .subscribe(requests => this.isLoading = requests.length > 0);
   }
 
