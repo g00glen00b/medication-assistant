@@ -6,10 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public interface MedicationAvailabilityFacade {
     Page<MedicationAvailabilityDTO> findAllNonEmptyNonExpiredByUserId(UUID userId, Pageable pageable);
+
+    List<MedicationAvailabilityTotalDTO> findAllTotalsByUserId(UUID userId);
 
     @Transactional
     MedicationAvailabilityDTO create(UUID userId, @Valid CreateMedicationAvailabilityRequestDTO request);

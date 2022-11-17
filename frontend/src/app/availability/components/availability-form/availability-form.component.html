@@ -93,7 +93,7 @@
       matInput
       formControlName="expiryDate"
       [min]="minimumExpiryDate"
-      [matDatepicker]="expiryDatepicker"/>
+      [matDatepicker]="expiryDatepicker!"/>
     <mat-datepicker-toggle matSuffix [for]="expiryDatepicker"></mat-datepicker-toggle>
     <mat-datepicker #expiryDatepicker></mat-datepicker>
     <mat-hint>Enter the date that the medication expires</mat-hint>

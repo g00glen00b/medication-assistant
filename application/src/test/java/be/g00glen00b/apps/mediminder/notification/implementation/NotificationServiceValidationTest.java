@@ -9,11 +9,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.modulith.test.ApplicationModuleTest;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -26,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class
 })
-@Import(NotificationServiceValidationTest.DummyConfiguration.class)
 class NotificationServiceValidationTest {
     @Autowired
     private NotificationService service;
@@ -112,11 +108,5 @@ class NotificationServiceValidationTest {
         assertThatExceptionOfType(ConstraintViolationException.class)
             .isThrownBy(() -> service.createOrUpdate(userId, request))
             .withMessageEndingWith("The reference of the notification cannot be longer than 128 characters");
-    }
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class DummyConfiguration {
-
     }
 }

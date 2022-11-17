@@ -11,11 +11,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.modulith.test.ApplicationModuleTest;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class
 })
-@Import(MedicationScheduleServiceValidationTest.DummyConfiguration.class)
 class MedicationScheduleServiceValidationTest {
     @Autowired
     private MedicationScheduleService service;
@@ -319,10 +315,5 @@ class MedicationScheduleServiceValidationTest {
         assertThatExceptionOfType(ConstraintViolationException.class)
             .isThrownBy(() -> service.update(userId, id, request))
             .withMessageEndingWith("The description cannot be longer than 256 characters");
-    }
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class DummyConfiguration {
     }
 }

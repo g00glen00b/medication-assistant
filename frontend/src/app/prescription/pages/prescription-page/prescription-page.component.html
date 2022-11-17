@@ -1,0 +1,22 @@
+<h2 class="mat-headline">Calculate prescriptions</h2>
+<p>
+  This tool will generate the number of medication you're missing from your inventory in order to complete all scheduled intakes until a given date.<br />
+  This allows you to request a number of prescriptions with your medical expert on a given date.
+</p>
+<p>
+  Please note, calculating this can take a while. As a precaution, only requests until <strong>2 years in the future</strong> are accepted.
+</p>
+<mediminder-prescription-form
+  (onCalculate)="calculatePrescriptions($event)">
+</mediminder-prescription-form>
+<mat-card *ngIf="prescriptions.length > 0">
+  <mediminder-prescription-table
+    [prescriptions]="prescriptions">
+  </mediminder-prescription-table>
+</mat-card>
+<mediminder-empty-state
+  [source]="prescriptions"
+  icon="calculate"
+  title="No prescriptions"
+  text="Create a schedule first, and choose a different date">
+</mediminder-empty-state>

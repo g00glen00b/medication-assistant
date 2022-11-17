@@ -1,11 +1,11 @@
-package be.g00glen00b.apps.mediminder.availability.implementation;
+package be.g00glen00b.apps.mediminder.utilities;
 
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static be.g00glen00b.apps.mediminder.availability.implementation.BigDecimalUtilities.isPositive;
-import static be.g00glen00b.apps.mediminder.availability.implementation.BigDecimalUtilities.toPercentage;
+import static be.g00glen00b.apps.mediminder.utilities.BigDecimalUtilities.isPositive;
+import static be.g00glen00b.apps.mediminder.utilities.BigDecimalUtilities.toPercentage;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BigDecimalUtilitiesTest {

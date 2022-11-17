@@ -6,16 +6,14 @@ import be.g00glen00b.apps.mediminder.user.UpdateUserRequestDTO;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.ZoneId;
 import java.util.Collections;
@@ -23,19 +21,21 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+@Testcontainers
 @ApplicationModuleTest
-@EnableAutoConfiguration(exclude = {
-    DataSourceAutoConfiguration.class,
-    DataSourceTransactionManagerAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class
-})
 @ActiveProfiles("test")
-@Import(UserServiceValidationTest.DummyConfiguration.class)
+@EnableWebSecurity
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(properties = {
+    "spring.datasource.url=jdbc:tc:postgresql:14.5-alpine3.16:///mediminder"
+})
 class UserServiceValidationTest {
     @Autowired
     private UserService service;
     @MockBean
     private UserEntityRepository repository;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void create_validatesEmailNotNull() {
@@ -112,12 +112,5 @@ class UserServiceValidationTest {
         assertThatExceptionOfType(ConstraintViolationException.class)
             .isThrownBy(() -> service.updateCredentials(id, request))
             .withMessageEndingWith("The new password is required");
-    }
-
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class DummyConfiguration {
-
     }
 }

@@ -1,4 +1,4 @@
-package be.g00glen00b.apps.mediminder.availability.implementation;
+package be.g00glen00b.apps.mediminder.utilities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

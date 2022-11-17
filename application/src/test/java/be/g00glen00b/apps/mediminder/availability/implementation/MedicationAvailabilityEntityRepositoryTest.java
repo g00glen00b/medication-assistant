@@ -11,10 +11,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -174,5 +176,16 @@ class MedicationAvailabilityEntityRepositoryTest {
             .hasSize(1)
             .extracting(LowMedicationAvailabilityInfo::getMedicationId)
             .containsOnly(MEDICATION_2_ID);
+    }
+
+    @Test
+    @Sql("classpath:availabilities.sql")
+    void findTotalQuantityGroupedByMedicationByUserId() {
+        List<MedicationAvailabilityTotal> results = repository.findTotalQuantityGroupedByMedicationByUserId(USER_ID);
+        assertThat(results)
+            .hasSize(2)
+            .extracting(MedicationAvailabilityTotal::getMedicationId, MedicationAvailabilityTotal::getTotalQuantity, MedicationAvailabilityTotal::getInitialQuantityPerItem)
+            .contains(tuple(MEDICATION_1_ID, new BigDecimal(1), new BigDecimal(10)))
+            .contains(tuple(MEDICATION_2_ID, new BigDecimal(5), new BigDecimal(10)));
     }
 }

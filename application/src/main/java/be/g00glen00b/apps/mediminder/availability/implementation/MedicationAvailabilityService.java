@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BinaryOperator;
 
@@ -34,6 +35,12 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
         return repository
             .findAllNonEmptyNonExpiredByUserId(userId, today, pageable)
             .map(this::mapToDTO);
+    }
+
+    @Override
+    public List<MedicationAvailabilityTotalDTO> findAllTotalsByUserId(UUID userId) {
+        List<MedicationAvailabilityTotal> results = repository.findTotalQuantityGroupedByMedicationByUserId(userId);
+        return results.stream().map(this::mapToDTO).toList();
     }
 
 
@@ -112,6 +119,11 @@ class MedicationAvailabilityService implements MedicationAvailabilityFacade {
     private MedicationAvailabilityDTO mapToDTO(MedicationAvailabilityEntity entity) {
         MedicationDTO medication = medicationFacade.findByIdOrDummy(entity.getMedicationId());
         return MedicationAvailabilityDTO.ofEntity(entity, medication);
+    }
+
+    private MedicationAvailabilityTotalDTO mapToDTO(MedicationAvailabilityTotal projection) {
+        MedicationDTO medication = medicationFacade.findByIdOrDummy(projection.getMedicationId());
+        return new MedicationAvailabilityTotalDTO(medication, projection.getInitialQuantityPerItem(), projection.getTotalQuantity());
     }
 
     private static <T> BinaryOperator<T> unsupportedOperator() {

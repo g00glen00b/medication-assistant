@@ -8,11 +8,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.modulith.test.ApplicationModuleTest;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -25,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class
 })
-@Import(MedicationServiceValidationTest.DummyConfiguration.class)
 class MedicationServiceValidationTest {
     @Autowired
     private MedicationService service;
@@ -70,11 +66,5 @@ class MedicationServiceValidationTest {
         assertThatExceptionOfType(ConstraintViolationException.class)
             .isThrownBy(() -> service.findOrCreate(request))
             .withMessageEndingWith("The quantity type is required");
-    }
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class DummyConfiguration {
-
     }
 }

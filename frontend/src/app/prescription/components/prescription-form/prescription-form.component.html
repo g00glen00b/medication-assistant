@@ -1,0 +1,22 @@
+<form [formGroup]="form" (submit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Date</mat-label>
+    <input
+      required
+      matInput
+      formControlName="date"
+      [max]="maximumDate"
+      [matDatepicker]="datePicker!"/>
+    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+    <mat-datepicker #datePicker></mat-datepicker>
+    <mat-hint>Enter the date until when you need to generate prescriptions</mat-hint>
+    <mat-error *ngIf="form.get('date')?.errors?.['required']">
+      Please enter a date
+    </mat-error>
+  </mat-form-field>
+  <button
+    color="primary"
+    mat-raised-button>
+    GENERATE
+  </button>
+</form>

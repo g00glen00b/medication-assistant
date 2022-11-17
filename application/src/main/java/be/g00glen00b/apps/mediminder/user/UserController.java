@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -80,7 +82,9 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Not found", content = @Content(schema = @Schema(implementation = MessageDTO.class)))
     })
     @GetMapping("/current")
-    public UserInfoDTO findCurrentUser(@AuthenticationPrincipal UserAuthentication userDetails) {
+    public UserInfoDTO findCurrentUser(@AuthenticationPrincipal UserAuthentication userDetails, HttpServletRequest request) {
+        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        csrfToken.getToken();
         return userFacade.findById(userDetails.getId());
     }
 

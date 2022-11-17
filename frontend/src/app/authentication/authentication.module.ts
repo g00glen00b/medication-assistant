@@ -15,6 +15,7 @@ import { UpdateProfileFormComponent } from './components/update-profile-form/upd
 import { UpdateCredentialsFormComponent } from './components/update-credentials-form/update-credentials-form.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatCardModule} from "@angular/material/card";
+import {CookieService} from "ngx-cookie-service";
 
 
 @NgModule({
@@ -27,16 +28,19 @@ import {MatCardModule} from "@angular/material/card";
     UpdateProfileFormComponent,
     UpdateCredentialsFormComponent
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        AuthenticationRoutingModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatCardModule
-    ]
+  imports: [
+    CommonModule,
+    SharedModule,
+    AuthenticationRoutingModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCardModule
+  ],
+  providers: [
+    CookieService,
+  ]
 })
 export class AuthenticationModule { }

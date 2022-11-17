@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'authentication',
     loadChildren: () => import(`./authentication/authentication.module`).then(module => module.AuthenticationModule)
   },
+  {
+    path: 'prescription',
+    loadChildren: () => import(`./prescription/prescription.module`).then(module => module.PrescriptionModule)
+  }
 ];
 
 @NgModule({

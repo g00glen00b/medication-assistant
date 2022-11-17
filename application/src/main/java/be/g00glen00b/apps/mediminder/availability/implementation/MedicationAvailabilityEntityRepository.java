@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,11 +46,13 @@ interface MedicationAvailabilityEntityRepository extends JpaRepository<Medicatio
     Page<LowMedicationAvailabilityInfo> findAllMedicationIdsWithQuantityPercentageLessThan(BigDecimal percentage, LocalDate expiresAfterDate, Pageable pageable);
 
     @Query("""
-        select a.medicationId as medicationId, sum(a.quantity) as totalQuantity
+        select a.medicationId as medicationId,
+        sum(a.quantity) as totalQuantity,
+        min(a.initialQuantity) as initialQuantityPerItem
         from MedicationAvailabilityEntity a
-        group by a.medicationId
         where a.userId = ?1
+        group by a.medicationId
     """)
-    
+    List<MedicationAvailabilityTotal> findTotalQuantityGroupedByMedicationByUserId(UUID userId);
 
 }

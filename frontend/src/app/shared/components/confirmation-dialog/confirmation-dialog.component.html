@@ -1,15 +1,16 @@
 <div mat-dialog-content>
-  {{message}}
+  {{confirmationInfo.message}}
 </div>
 <div mat-dialog-actions>
   <button
     mat-button
+    *ngIf="confirmationInfo.showConfirm || confirmationInfo.showConfirm == null"
     [mat-dialog-close]="true">
-    CONFIRM
+    {{confirmationInfo.confirmText || 'CONFIRM'}}
   </button>
   <button
     mat-button
     [mat-dialog-close]="false">
-    CANCEL
+    {{confirmationInfo.cancelText || 'CANCEL'}}
   </button>
 </div>

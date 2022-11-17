@@ -8,13 +8,11 @@ import be.g00glen00b.apps.mediminder.notification.NotificationFacade;
 import be.g00glen00b.apps.mediminder.notification.NotificationType;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.*;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
@@ -71,6 +69,8 @@ class NotificationBatchTest {
     private static final UUID AVAILABILITY_4_ID = UUID.fromString("1a921354-a131-429b-8f1f-7b40e59c8b1a");
     private static final UUID AVAILABILITY_5_ID = UUID.fromString("89251a0d-ebef-4a2e-8472-09e9087bfd5a");
     private static final ZonedDateTime TODAY = ZonedDateTime.of(2022, 10, 10, 15, 46, 0, 0, ZoneId.of("UTC"));
+    @Autowired
+    private Job notificationJob;
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -88,6 +88,11 @@ class NotificationBatchTest {
     private ArgumentCaptor<UUID> anyUUID;
     @Captor
     private ArgumentCaptor<CreateOrUpdateNotificationRequestDTO> anyCreateNotificationRequest;
+
+    @BeforeEach
+    void setUp() {
+        jobLauncherTestUtils.setJob(notificationJob);
+    }
 
     @AfterEach
     void tearDown() {

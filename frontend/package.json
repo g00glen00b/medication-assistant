@@ -25,6 +25,7 @@
     "@fontsource/material-icons-outlined": "^4.5.4",
     "@fontsource/roboto": "^4.5.8",
     "date-fns": "^2.29.3",
+    "ngx-cookie-service": "^14.0.1",
     "ngx-infinite-scroll": "^14.0.0",
     "rxjs": "~7.5.0",
     "tinyduration": "^3.2.2",

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterModule} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {MatToolbarModule} from "@angular/material/toolbar";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {CentralCardComponent} from './components/central-card/central-card.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
@@ -15,6 +15,9 @@ import {MatListModule} from "@angular/material/list";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { ReadableDurationComponent } from './components/readable-duration/readable-duration.component';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
+import { HttpProgressbarComponent } from './components/http-progressbar/http-progressbar.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {HttpRequestInterceptorService} from "./services/http-request-interceptor.service";
 
 @NgModule({
   declarations: [
@@ -23,26 +26,32 @@ import { EmptyStateComponent } from './components/empty-state/empty-state.compon
     NavigationComponent,
     ReadableDurationComponent,
     EmptyStateComponent,
+    HttpProgressbarComponent,
   ],
-    imports: [
-        CommonModule,
-        HttpClientModule,
-        RouterModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatCardModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatListModule,
-        MatSidenavModule
-    ],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    RouterModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatCardModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatListModule,
+    MatSidenavModule,
+    MatProgressBarModule
+  ],
   exports: [
     HttpClientModule,
     CentralCardComponent,
     NavigationComponent,
     ReadableDurationComponent,
     EmptyStateComponent,
+    HttpProgressbarComponent,
+  ],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptorService, multi: true}
   ]
 })
 export class SharedModule { }

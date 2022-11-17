@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static be.g00glen00b.apps.mediminder.availability.implementation.BigDecimalUtilities.toPercentage;
+import static be.g00glen00b.apps.mediminder.utilities.BigDecimalUtilities.toPercentage;
 
 @RequiredArgsConstructor
 public class MedicationAvailabilityLowQuantityReader extends RepositoryItemReader<LowMedicationAvailabilityInfo> {
